@@ -1,48 +1,63 @@
-# Plan: Commit remaining files and push to remote
+# Plan: Rebase en merge docs/translate-to-english naar main
 
 ## Context
 
-The starter kit has 7 commits on `fix/code-quality-and-ci` but the bulk of the codebase (~60 files) is still untracked. The user wants to commit everything and push to `git@github.com:WillowLoop/starter-kit.git`.
-
-## Security check (done)
-
-- `.gitignore` correctly excludes: `.env`, `.env.local`, `*.pem`, `*.key`, `.claude/settings.local.json`, `.claude/plans/`
-- No sensitive files in the untracked list
-- `backend/.env` (real credentials) is gitignored — will NOT be committed
-- `.claude/settings.local.json` (personal permissions) is gitignored — will NOT be committed
+Branch `docs/translate-to-english` bevat 1 commit (`7ff3abf`) die 30 bestanden raakt — vertalingen naar Engels, nieuwe ADRs, templates en READMEs. De branch mist 8 commits die op `main` staan. Er zijn ~9 merge conflicts verwacht bij rebase.
 
 ## Steps
 
-### 1. Commit all remaining files
+### 1. Voorbereiding
 
-Single commit for the full starter kit codebase:
-
-```
-git add .
-git commit -m "chore: add starter kit codebase"
+```bash
+git stash --include-untracked -m "WIP: plan files"    # dirty working tree opruimen
+git branch translate-backup docs/translate-to-english  # backup voor rollback
 ```
 
-Files included:
-- **Root:** `.gitignore`, `.gitleaksignore`, `.trivyignore`, `README.md`, `release-please-config.json`, `.release-please-manifest.json`
-- **Backend:** `app/`, `features/`, `shared/`, `tests/`, `Dockerfile`, `Makefile`, `alembic.ini`, `docker-compose*.yml`, `uv.lock`, `.dockerignore`, `.gitignore`, `CLAUDE.md`
-- **Frontend:** `src/` (app, components, features, hooks, lib, test, types), config files (tsconfig, eslint, vitest, postcss, next.config, components.json, pnpm-workspace)
-- **Docs:** `planning/plans/`, `workflows/`
-- **CI/CD:** `dependabot.yml`, `deploy-backend.yml`, `deploy-frontend.yml`, `release.yml`
-- **Scripts:** `hooks/`, `init-project.sh`
-- **Claude:** `.claude/` (agents, commands, hooks, skills, settings.json)
-- **Modified:** `CLAUDE.md`, `backend/pyproject.toml`, `docs/README.md`, `docs/architecture/adr/0001-frontend-tech-stack.md`, `docs/architecture/c4/containers.md`
+### 2. Rebase op main
 
-### 2. Add remote and push
-
+```bash
+git checkout docs/translate-to-english
+git rebase main
 ```
-git remote add origin git@github.com:WillowLoop/starter-kit.git
-git push -u origin fix/code-quality-and-ci
+
+### 3. Conflict resolution (per bestand)
+
+| # | Bestand | Strategie |
+|---|---------|-----------|
+| 1 | `CLAUDE.md` | Engelse vertaling van translate, maar **behoud `make setup`** (niet `make hooks`) en **behoud `release-please-config.json`** referentie uit main. Neem CI/CD sectie mee als die op main staat. |
+| 2 | `.pre-commit-config.yaml` | **Gebruik main's versie** (51 regels, superset met `frontend-lint` + `conventional-pre-commit` hooks). Translate's versie is incompleet. |
+| 3 | `scripts/init-project.sh` | **Gebruik translate's versie** (216 regels, robuuster: prerequisite checks, confirmation, self-deletion). Main's 54-regels versie is een simplificatie. |
+| 4 | `backend/CLAUDE.md` | **Merge beide**: Engelse tekst van translate + structurele info van main (httpx testing, directory layout). |
+| 5 | `README.md` | **Gebruik translate's versie** (Engels, uitgebreider). |
+| 6 | `docs/README.md` | **Merge**: Engelse structuur van translate + nieuwe secties van main (PRD, Design Docs, bootstrap checklist). |
+| 7 | `docs/architecture/c4/containers.md` | **Merge**: Engelse tekst van translate + deployment details van main (Vercel, Coolify). Next.js 16. |
+| 8 | `docs/architecture/adr/0001-frontend-tech-stack.md` | **Merge**: Engelse vertaling + Next.js 16 versie-update uit main. |
+| 9 | `.github/workflows/security.yml` | **Gebruik main's versie** (functioneel, geen vertaalbare content). |
+
+Na elk bestand: `git add <file>`, daarna `git rebase --continue`.
+
+### 4. Merge in main (fast-forward)
+
+```bash
+git checkout main
+git merge docs/translate-to-english
+```
+
+### 5. Push en opruimen
+
+```bash
+git push origin main
+git branch -d docs/translate-to-english
+git branch -d translate-backup
+git stash pop  # WIP plan files terugzetten
 ```
 
 ## Verification
 
-```
-git log --oneline -10    # 8 commits total (7 existing + 1 new)
-git remote -v            # origin points to GitHub
-git status               # clean working tree
+```bash
+git log --oneline -5                    # vertaalcommit bovenop main
+git diff main~1..main --stat            # alleen vertaal-wijzigingen
+grep "make setup" CLAUDE.md             # functionele fix behouden
+grep "frontend-lint" .pre-commit-config.yaml  # hook behouden
+git status                              # clean tree (behalve unstashed plan files)
 ```
