@@ -17,6 +17,6 @@ async def health_check(session: AsyncSession = Depends(get_session)) -> HealthRe
 # Liveness probe — intentionally dependency-free (no DB, no Redis).
 # Do NOT add Depends() here; k8s/Docker must get 200 even when dependencies are down.
 @router.get("/health/live")
-async def health_live() -> dict:
+async def health_live() -> dict[str, str]:
     """Shallow liveness probe — no I/O. Used by Dockerfile HEALTHCHECK."""
     return {"status": "ok"}

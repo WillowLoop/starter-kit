@@ -1,0 +1,42 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+      - id: detect-private-key
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.1
+    hooks:
+      - id: ruff
+        args: ['--config', 'backend/pyproject.toml']
+      - id: ruff-format
+        args: ['--config', 'backend/pyproject.toml']
+
+  - repo: local
+    hooks:
+      - id: env-example-sync
+        name: .env.example sync check
+        language: python
+        entry: python scripts/hooks/check_env_sync.py
+        files: backend/shared/config\.py|backend/\.env\.example
+        pass_filenames: false
+
+      - id: no-sensitive-data
+        name: Block sensitive data files
+        entry: "Sensitive data should not be in git — use backend/data/ (gitignored)"
+        language: fail
+        files: 'backend/data/.*\.(pdf|xlsx|csv|json)$'
+
+      - id: frontend-lint
+        name: frontend eslint
+        entry: pnpm --dir frontend exec eslint
+        language: system
+        files: ^frontend/src/.*\.(ts|tsx)$
+        types: [file]
