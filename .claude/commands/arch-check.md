@@ -1,7 +1,3 @@
-# DO NOT EDIT - Auto-generated from setup/commands/
-# Source: setup/commands/arch-check.md
-# To modify, edit the source and run: ./setup/scripts/sync-agents.sh
-
 ---
 description: Architecture accuracy audit — verify C4 docs and ADRs against the actual codebase
 ---
@@ -51,27 +47,27 @@ Collect every WARN and FAIL into a drift list for the Drift Summary table (Phase
 
 ### Category A: C4 Context vs Reality (3 checks)
 
-A1. Systeemnaam:
-- Extract the **bold text** from the "Systeem" section in context.md (the text between ** markers)
+A1. System name:
+- Extract the **bold text** from the "System" section in context.md (the text between ** markers)
 - Compare with the H1 heading (# line) in root CLAUDE.md
 - Exact string match, case-insensitive
 - PASS if they match; FAIL if they differ; FAIL if either is missing
 
-A2. Actoren ingevuld:
-- Find the Actoren table in context.md
+A2. Actors populated:
+- Find the Actors table in context.md
 - PASS if all cells contain real descriptive content
-- WARN if any cell contains placeholder brackets (text like [beschrijving] or [something])
-- FAIL if the Actoren section or table is missing entirely
+- WARN if any cell contains placeholder brackets (text like [description] or [something])
+- FAIL if the Actors section or table is missing entirely
 
-A3. Externe systemen ingevuld:
-- Find the Externe systemen table in context.md
+A3. External systems populated:
+- Find the External Systems table in context.md
 - PASS if all cells contain real descriptive content (no brackets)
 - WARN if any cell contains placeholder brackets (text like [Auth provider] or [something])
-- FAIL if the Externe systemen section or table is missing entirely
+- FAIL if the External Systems section or table is missing entirely
 
 ### Category B: C4 Containers vs Codebase (4 checks)
 
-B1. Container folders bestaan:
+B1. Container folders exist:
 - Extract each container from the Containers table in containers.md
 - For each container, verify a corresponding directory exists:
   - "Frontend" → frontend/ directory
@@ -110,8 +106,8 @@ B4. Database/cache vs docker-compose.yml:
 
 ### Category C: C4 Components vs Codebase (4 checks)
 
-C1. Frontend module-paden bestaan:
-- Extract all paths from the "Frontend Components" table in components.md (the "Pad" column)
+C1. Frontend module paths exist:
+- Extract all paths from the "Frontend Components" table in components.md (the "Path" column)
 - For each path, verify it exists under frontend/:
   - e.g. "src/app/" → check frontend/src/app/ exists
   - e.g. "src/features/{name}/" → check frontend/src/features/ exists (the parent)
@@ -119,8 +115,8 @@ C1. Frontend module-paden bestaan:
 - PASS if all paths exist; FAIL for each missing path
 - If frontend/ doesn't exist at all: WARN
 
-C2. Backend module-paden bestaan:
-- Extract all paths from the "Backend Components" table in components.md (the "Pad" column)
+C2. Backend module paths exist:
+- Extract all paths from the "Backend Components" table in components.md (the "Path" column)
 - For each path, verify it exists under backend/:
   - e.g. "app/" → check backend/app/ exists
   - e.g. "features/{name}/" → check backend/features/ exists (the parent)
@@ -129,8 +125,8 @@ C2. Backend module-paden bestaan:
 - PASS if all paths exist; FAIL for each missing path
 - If backend/ doesn't exist at all: WARN
 
-C3. Architectuurpatronen verifieerbaar:
-- Extract patterns from the Architectuurpatronen section in components.md
+C3. Architecture patterns verifiable:
+- Extract patterns from the Architecture Patterns section in components.md
 - Verify patterns are reflected in code:
   - "Router → Service → Repository": check if at least 1 feature directory under backend/features/ contains router.py + service.py + repository.py
   - "Feature-first" / "Colocation": check if backend/features/ or frontend/src/features/ exists with subdirectories
@@ -138,7 +134,7 @@ C3. Architectuurpatronen verifieerbaar:
 - If the relevant directories exist but contain only .gitkeep (no actual source files): SKIP (not WARN, not FAIL)
 - If directories don't exist at all but are documented: FAIL
 
-C4. Reverse check — ongedocumenteerde modules:
+C4. Reverse check — undocumented modules:
 - List all significant directories under frontend/src/ and backend/ that contain .py or .ts/.tsx source files
 - Compare against the paths documented in components.md tables
 - WARN for each significant undocumented directory
@@ -147,7 +143,7 @@ C4. Reverse check — ongedocumenteerde modules:
 
 ### Category D: ADR Accuracy (4 checks)
 
-D1. Verplichte velden:
+D1. Required fields:
 - For each ADR file (skip _template.md):
   - Verify these fields exist in the metadata/header:
     - Status: must be one of (proposed, accepted, superseded, deprecated)
@@ -157,8 +153,8 @@ D1. Verplichte velden:
   - PASS if all fields valid; FAIL if any field missing or has invalid value
 - Report per-ADR results
 
-D2. Tech-ADRs vs geinstalleerde dependencies:
-- For each ADR that makes technology claims (look in "Decision" or "Beslissing" sections):
+D2. Tech ADRs vs installed dependencies:
+- For each ADR that makes technology claims (look in "Decision" sections):
   - Extract named technologies and versions
   - Verify against the corresponding config file (package.json for frontend, pyproject.toml for backend)
   - Same comparison rules as B2/B3:
@@ -167,7 +163,7 @@ D2. Tech-ADRs vs geinstalleerde dependencies:
   - PASS if all claims verified; FAIL for mismatches
 - This intentionally overlaps with B2/B3 — ADRs and containers.md can drift independently
 
-D3. ADR patronen vs codebase:
+D3. ADR patterns vs codebase:
 - For ADRs that describe structural patterns (feature-first, tooling like Ruff):
   - Verify the pattern is reflected in the codebase
   - e.g. "feature-first" → features/ directory should exist
@@ -175,7 +171,7 @@ D3. ADR patronen vs codebase:
 - If no feature code exists (only .gitkeep): SKIP
 - PASS if patterns verified; FAIL for contradictions
 
-D4. ADR-referenties in C4 docs bestaan:
+D4. ADR references in C4 docs exist:
 - Scan all C4 docs (context.md, containers.md, components.md) for ADR references
 - Match patterns: "ADR-NNNN" or filenames like "0001-frontend-tech-stack.md"
 - For each reference, verify the corresponding file exists in docs/architecture/adr/
@@ -188,15 +184,15 @@ Output EXACTLY this format:
 ## Arch Check Report
 
 ### C4 Context vs Reality
-- [PASS/WARN/FAIL] A1: Systeemnaam match (context.md ↔ root CLAUDE.md)
+- [PASS/WARN/FAIL] A1: System name match (context.md ↔ root CLAUDE.md)
   [details if not PASS]
-- [PASS/WARN/FAIL] A2: Actoren ingevuld
+- [PASS/WARN/FAIL] A2: Actors populated
   [details if not PASS]
-- [PASS/WARN/FAIL] A3: Externe systemen ingevuld
+- [PASS/WARN/FAIL] A3: External systems populated
   [details if not PASS]
 
 ### C4 Containers vs Codebase
-- [PASS/WARN/FAIL] B1: Container folders bestaan
+- [PASS/WARN/FAIL] B1: Container folders exist
   [details if not PASS]
 - [PASS/WARN/FAIL/SKIP] B2: Frontend tech vs package.json
   [details if not PASS]
@@ -206,36 +202,36 @@ Output EXACTLY this format:
   [details if not PASS]
 
 ### C4 Components vs Codebase
-- [PASS/WARN/FAIL] C1: Frontend module-paden bestaan
+- [PASS/WARN/FAIL] C1: Frontend module paths exist
   [details if not PASS]
-- [PASS/WARN/FAIL] C2: Backend module-paden bestaan
+- [PASS/WARN/FAIL] C2: Backend module paths exist
   [details if not PASS]
-- [PASS/WARN/FAIL/SKIP] C3: Architectuurpatronen verifieerbaar
+- [PASS/WARN/FAIL/SKIP] C3: Architecture patterns verifiable
   [details if not PASS/SKIP]
-- [PASS/WARN/SKIP] C4: Ongedocumenteerde modules
+- [PASS/WARN/SKIP] C4: Undocumented modules
   [details if not PASS/SKIP]
 
 ### ADR Accuracy
-- [PASS/FAIL] D1: Verplichte velden per ADR
+- [PASS/FAIL] D1: Required fields per ADR
   [details if not PASS]
-- [PASS/FAIL/SKIP] D2: Tech-ADRs vs geinstalleerde dependencies
+- [PASS/FAIL/SKIP] D2: Tech ADRs vs installed dependencies
   [details if not PASS]
-- [PASS/FAIL/SKIP] D3: ADR patronen vs codebase
+- [PASS/FAIL/SKIP] D3: ADR patterns vs codebase
   [details if not PASS/SKIP]
-- [PASS/FAIL] D4: ADR-referenties in C4 docs bestaan
+- [PASS/FAIL] D4: ADR references in C4 docs exist
   [details if not PASS]
 
 ### Drift Summary
 
 Only include this table if there are WARN or FAIL results. Skip if everything passes.
 
-| Bron | Documenteert | Werkelijkheid | Ernst |
-|------|-------------|---------------|-------|
+| Source | Documents | Reality | Severity |
+|--------|-----------|---------|----------|
 | [source file] | [what docs claim] | [what codebase shows] | [WARN/FAIL] |
 
 Example rows:
 | containers.md | Next.js 15 | next@16.1.6 in package.json | FAIL |
-| context.md | [Auth provider] | Placeholder niet ingevuld | WARN |
+| context.md | [Auth provider] | Placeholder not filled in | WARN |
 
 ### Verdict: [ARCH ACCURATE / ARCH DRIFTED / ARCH BROKEN]
 
