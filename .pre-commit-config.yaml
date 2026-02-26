@@ -37,10 +37,11 @@ repos:
 
       - id: frontend-lint
         name: frontend eslint
-        entry: pnpm --dir frontend exec eslint
+        entry: pnpm --dir frontend exec eslint src/
         language: system
         files: ^frontend/src/.*\.(ts|tsx)$
         types: [file]
+        pass_filenames: false
 
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v4.4.0
