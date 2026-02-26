@@ -1,25 +1,27 @@
 # C4 Level 1 — System Context
 
-> Het systeem in zijn omgeving. Welke actoren en externe systemen interacteren ermee?
+> Fill in during bootstrap (see docs/README.md step 4)
 
-## Systeem
+> The system in its environment. Which actors and external systems interact with it?
 
-**AIpoweredMakers** — Platform dat makers ondersteunt met AI-gestuurde tools en workflows.
+## System
 
-## Actoren
+**AIpoweredMakers** — Platform that supports makers with AI-powered tools and workflows.
 
-| Actor | Rol | Interactie |
+## Actors
+
+| Actor | Role | Interaction |
 |---|---|---|
-| Maker | Eindgebruiker die AI-tools gebruikt | Gebruikt de web applicatie om te creëren en samenwerken |
-| Admin | Beheert het platform | Configureert systeem, beheert gebruikers en content |
+| Maker | End user who uses AI tools | Uses the web application to create and collaborate |
+| Admin | Manages the platform | Configures system, manages users and content |
 
-## Externe systemen
+## External Systems
 
-| Systeem | Doel | Protocol | Richting |
+| System | Purpose | Protocol | Direction |
 |---|---|---|---|
-| [Auth provider] | Authenticatie | OAuth2/OIDC | Outbound |
-| [Payment provider] | Betalingen | REST API | Outbound |
-| [Email service] | Notificaties | SMTP/API | Outbound |
+| [Auth provider] | Authentication | OAuth2/OIDC | Outbound |
+| [Payment provider] | Payments | REST API | Outbound |
+| [Email service] | Notifications | SMTP/API | Outbound |
 
 ## Context Diagram
 
@@ -40,6 +42,6 @@
                     └─────────┘
 ```
 
-## Gerelateerde ADRs
+## Related ADRs
 
-- ADR-0001: Frontend tech stack keuze
+- ADR-0001: Frontend tech stack choice

@@ -2,71 +2,53 @@
 
 Full-stack starter kit: Next.js 16 + FastAPI + PostgreSQL.
 
-## Prerequisites
-
-- Node.js 18.18+ (required by Next.js 16)
-- [pnpm](https://pnpm.io/)
-- Python 3.12+
-- [uv](https://docs.astral.sh/uv/)
-- Docker (for PostgreSQL + Redis)
-
 ## Quick Start
 
-Ensure you have the [Prerequisites](#prerequisites) installed, then:
+> **Tip:** You'll need 3 terminal sessions: database services, backend, and frontend.
+
+**1. Initialize** (one-time, transforms starter-kit into your project — renames project, resets git history, regenerates lockfiles):
 
 ```bash
-# Only for new projects from this template (skip for existing repos):
 make init
+```
 
-# First-time setup (backend .env, frontend deps, git hooks):
+**2. Setup** (first-time after init):
+
+```bash
 make setup
+```
 
-# Start infrastructure + see dev server instructions:
+**3. Backend:**
+
+```bash
+cd backend
+docker compose up -d postgres redis
+make migrate
 make dev
 ```
 
-## Project Structure
+API runs on `http://localhost:8000` — Swagger UI at `http://localhost:8000/docs`.
 
-| Folder | Description |
-|---|---|
-| `frontend/` | Next.js 16 web app (TypeScript, Tailwind, shadcn/ui) |
-| `backend/` | FastAPI backend API (Python 3.12+, SQLAlchemy, PostgreSQL) |
-| `docs/` | Architecture (C4), ADRs, workflows, planning |
-| `scripts/` | Project initialization and hook scripts |
-| `.github/` | CI/CD workflows (lint, test, build, deploy) |
+**4. Frontend:**
 
-## Available Commands
-
-```
-make help       Show available commands
-make init       Transform starter-kit into a new project
-make setup      First-time project setup
-make dev        Start dev servers (requires two terminals)
-make test       Run all tests
-make lint       Run all linters
+```bash
+cd frontend
+pnpm install
+pnpm dev
 ```
 
-## Git Workflow
+App runs on `http://localhost:3000`.
 
-This project uses [Conventional Commits](https://www.conventionalcommits.org/):
+## Repo Layout
 
-```
-type(scope): description
-
-# Examples:
-feat(backend): add user registration endpoint
-fix(frontend): resolve hydration mismatch on home page
-docs: update API architecture diagram
-chore: bump dependencies
-```
-
-Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `ci`, `chore`, `build`, `perf`, `revert`
-Allowed scopes: `frontend`, `backend`, `docs`, `ci` (or empty)
+| Folder | Description | README |
+|---|---|---|
+| `frontend/` | Next.js 16 web app (TypeScript, Tailwind, shadcn/ui) | [frontend/README.md](frontend/README.md) |
+| `backend/` | FastAPI backend API (Python 3.12+, SQLAlchemy, PostgreSQL) | [backend/README.md](backend/README.md) |
+| `docs/` | Architecture (C4), ADRs, workflows, research, planning | [docs/README.md](docs/README.md) |
 
 ## Documentation
 
-- [Documentation Index](docs/README.md)
-- [Architecture (C4)](docs/architecture/c4/containers.md)
-- [Architecture Decision Records](docs/architecture/adr/)
-- [CI/CD Setup Guide](docs/workflows/cicd-setup.md)
-- [Project Documentation Guide](docs/project-documentation-guide.md)
+- [Bootstrap Checklist](docs/README.md) — Post-init setup steps
+- [Architecture (C4)](docs/architecture/c4/) — System context, containers, components
+- [ADRs](docs/architecture/adr/) — Architecture Decision Records

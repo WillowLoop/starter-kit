@@ -1,69 +1,69 @@
-# ADR-NNNN: [Titel]
+# ADR-NNNN: [Title]
 
 - **Status**: proposed | accepted | superseded | deprecated
 - **C4 Level**: L1-Context | L2-Container | L3-Component | L4-Code
-- **Scope**: [welke container/component dit raakt]
+- **Scope**: [which container/component this affects]
 - **Date**: YYYY-MM-DD
 
 ## Context
 
-[Welk probleem lossen we op? Welke krachten spelen mee?]
+[What problem are we solving? What forces are at play?]
 
 ## Decision
 
-[De gekozen aanpak. Committed.]
+[The chosen approach. Committed.]
 
 ## Reasoning Chain
 
-[Multi-step redenering, minimaal 2 stappen]
-- [Premisse] → [Implicatie] → [Conclusie]
+[Multi-step reasoning, at least 2 steps]
+- [Premise] → [Implication] → [Conclusion]
 
 ## Alternatives Considered
 
-| Alternatief | Waarom afgewezen |
+| Alternative | Why rejected |
 |---|---|
-| [aanpak A] | [concrete reden] |
-| [aanpak B] | [concrete reden] |
+| [approach A] | [concrete reason] |
+| [approach B] | [concrete reason] |
 
 ## Consequences
 
-- [Wat wordt makkelijker]
-- [Wat wordt moeilijker]
-- [Welke constraints dit creëert voor toekomstige beslissingen]
+- [What becomes easier]
+- [What becomes harder]
+- [What constraints this creates for future decisions]
 
 ---
 
-## Wanneer een ADR aanmaken
+## When to create an ADR
 
-- Beslissing raakt meer dan één directory (cross-cutting of system-wide)
-- Beslissing beperkt toekomstige architectuurkeuzes
-- Beslissing was niet-obvious en de redenering moet bewaard worden
+- Decision affects more than one directory (cross-cutting or system-wide)
+- Decision constrains future architecture choices
+- Decision was non-obvious and the reasoning must be preserved
 
-Lokale beslissingen (single module) kunnen in de `CLAUDE.md` van die directory.
+Local decisions (single module) can go in the `CLAUDE.md` of that directory.
 
-## Naamgeving
+## Naming
 
 ```
-docs/adr/NNNN-korte-kebab-titel.md
+docs/architecture/adr/NNNN-short-kebab-title.md
 ```
 
-Nummering begint bij `0001`, oplopend.
+Numbering starts at `0001`, ascending.
 
-## C4-koppeling
+## C4 coupling
 
-Het **C4 Level** veld koppelt elke ADR aan het juiste architectuurniveau:
+The **C4 Level** field links each ADR to the correct architecture level:
 
-| C4 Level | Voorbeeld beslissing |
+| C4 Level | Example decision |
 |---|---|
-| L1-Context | "Systeem X communiceert via REST met externe partij Y" |
-| L2-Container | "Frontend draait op Next.js, backend op FastAPI" |
-| L3-Component | "Auth module gebruikt bcrypt voor password hashing" |
-| L4-Code | "Alle API clients gebruiken een shared base class" |
+| L1-Context | "System X communicates via REST with external party Y" |
+| L2-Container | "Frontend runs on Next.js, backend on FastAPI" |
+| L3-Component | "Auth module uses bcrypt for password hashing" |
+| L4-Code | "All API clients use a shared base class" |
 
 ## Lifecycle
 
 ```
-Proposed → Accepted → [leeft als referentie] → Deprecated/Superseded
+Proposed → Accepted → [lives as reference] → Deprecated/Superseded
 ```
 
-Een ADR wordt nooit verwijderd — markeer als deprecated/superseded om redeneerhistorie te bewaren.
+An ADR is never deleted — mark as deprecated/superseded to preserve reasoning history.

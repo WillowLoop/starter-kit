@@ -1,13 +1,13 @@
-# Epic: [Naam]
+# Epic: [Name]
 
 - **Status**: 🔴 Not started
-- **Prioriteit**: P?
+- **Priority**: P?
 - **Target**: Q? 2026
 - **Impact**: Frontend / Backend / Both
 
-## Doel
+## Goal
 
-[Wat willen we bereiken? Eén alinea max.]
+[What do we want to achieve? One paragraph max.]
 
 ## Scope
 
@@ -19,17 +19,18 @@
 
 ## Milestones
 
-| # | Milestone | Status | Beschrijving |
+| # | Milestone | Status | Description |
 |---|---|---|---|
 | 1 | | 🔴 | |
 | 2 | | 🔴 | |
 
 ## Dependencies
 
-- **C4 docs**: [link naar relevante docs in `docs/c4/`]
-- **ADRs**: [link naar relevante beslissingen in `docs/adr/`]
-- **Externe**: [API's, services, etc.]
+- **PRD**: [link to PRD, or "n/a"]
+- **C4 docs**: [link to relevant docs in `docs/architecture/c4/`]
+- **ADRs**: [link to relevant decisions in `docs/architecture/adr/`]
+- **External**: [APIs, services, etc.]
 
-## Notities
+## Notes
 
 -

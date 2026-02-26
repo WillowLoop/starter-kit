@@ -7,7 +7,7 @@
 
 ## Context
 
-Het AIpoweredMakers project heeft een backend API nodig die async-first is, sterke type-safety biedt, en goed aansluit bij het Python-ecosysteem. De keuze voor framework, ORM, database, package manager, linter en test runner moet nu gemaakt worden omdat het de basis legt voor alle toekomstige backend ontwikkeling.
+The AIpoweredMakers project needs a backend API that is async-first, offers strong type safety, and integrates well with the Python ecosystem. The choice of framework, ORM, database, package manager, linter and test runner must be made now because it lays the foundation for all future backend development.
 
 ## Decision
 
@@ -21,43 +21,43 @@ Het AIpoweredMakers project heeft een backend API nodig die async-first is, ster
 
 ## Reasoning Chain
 
-1. We bouwen een async API met sterke request/response validatie → framework met native async + Pydantic integratie nodig → FastAPI
-2. FastAPI vereist Python, Python ecosystem biedt mature async ORM opties → SQLAlchemy 2.0 met native async support (geen legacy patterns) → SQLAlchemy 2.0 + asyncpg
-3. Database moet ACID-compliant zijn met goede async driver support → PostgreSQL (mature, asyncpg is snelste Python async PG driver)
-4. Cache/sessie-opslag nodig voor toekomstige features → Redis (de facto standaard, minimale operationele overhead)
-5. Package manager moet snel zijn en lockfile ondersteunen → uv (10-100x sneller dan pip/Poetry, native lockfile, editable installs)
-6. Linter + formatter moeten snel zijn en één tool → Ruff (vervangt flake8 + black + isort in één binary, 10-100x sneller)
-7. Test runner moet native async ondersteunen → pytest + pytest-asyncio (de facto standaard, uitgebreid plugin ecosysteem)
+1. We are building an async API with strong request/response validation → framework with native async + Pydantic integration needed → FastAPI
+2. FastAPI requires Python, Python ecosystem offers mature async ORM options → SQLAlchemy 2.0 with native async support (no legacy patterns) → SQLAlchemy 2.0 + asyncpg
+3. Database must be ACID-compliant with good async driver support → PostgreSQL (mature, asyncpg is the fastest Python async PG driver)
+4. Cache/session storage needed for future features → Redis (de facto standard, minimal operational overhead)
+5. Package manager must be fast and support lockfiles → uv (10-100x faster than pip/Poetry, native lockfile, editable installs)
+6. Linter + formatter must be fast and a single tool → Ruff (replaces flake8 + black + isort in one binary, 10-100x faster)
+7. Test runner must natively support async → pytest + pytest-asyncio (de facto standard, extensive plugin ecosystem)
 
 ### uv vs Poetry
 
-uv is gekozen boven Poetry omdat:
-- uv is significant sneller (Rust-gebaseerd, 10-100x sneller dan Poetry)
-- uv gebruikt standaard `pyproject.toml` (geen `poetry.toml`)
-- uv genereert een `uv.lock` die gecommit wordt (reproducible builds)
-- uv heeft native support voor editable installs en dependency groups
+uv was chosen over Poetry because:
+- uv is significantly faster (Rust-based, 10-100x faster than Poetry)
+- uv uses standard `pyproject.toml` (no `poetry.toml`)
+- uv generates a `uv.lock` that gets committed (reproducible builds)
+- uv has native support for editable installs and dependency groups
 
 ### Ruff vs Black + Flake8
 
-Ruff vervangt meerdere tools (flake8, black, isort, pyupgrade) in één binary:
-- Eén configuratie in `pyproject.toml` in plaats van meerdere config files
-- 10-100x sneller dan de combinatie van individuele tools
-- Actief onderhouden door Astral (zelfde team als uv)
+Ruff replaces multiple tools (flake8, black, isort, pyupgrade) in one binary:
+- One configuration in `pyproject.toml` instead of multiple config files
+- 10-100x faster than the combination of individual tools
+- Actively maintained by Astral (same team as uv)
 
 ## Alternatives Considered
 
-| Alternatief | Waarom afgewezen |
+| Alternative | Why rejected |
 |---|---|
-| Django REST Framework | Heavyweight, synchrone achtergrond, eigen ORM verplicht, overkill voor API-only |
-| Express/NestJS (Node.js) | Team expertise is Python, geen voordeel boven FastAPI voor dit project |
-| Tortoise ORM | Kleiner ecosysteem dan SQLAlchemy, minder mature async support |
-| MongoDB | Geen ACID compliance nodig? Toch wel — SQLAlchemy + PostgreSQL biedt meer flexibiliteit |
-| Poetry | Langzamer dan uv, complexere dependency resolution, eigen config formaat |
-| pip + venv | Geen lockfile, geen dependency groups, langzaam |
-| Black + Flake8 + isort | Drie tools in plaats van één, significant langzamer dan Ruff |
+| Django REST Framework | Heavyweight, synchronous background, own ORM required, overkill for API-only |
+| Express/NestJS (Node.js) | Team expertise is Python, no advantage over FastAPI for this project |
+| Tortoise ORM | Smaller ecosystem than SQLAlchemy, less mature async support |
+| MongoDB | No ACID compliance needed? Actually yes — SQLAlchemy + PostgreSQL offers more flexibility |
+| Poetry | Slower than uv, more complex dependency resolution, own config format |
+| pip + venv | No lockfile, no dependency groups, slow |
+| Black + Flake8 + isort | Three tools instead of one, significantly slower than Ruff |
 
 ## Consequences
 
-- **Makkelijker:** Snelle iteratie met FastAPI + auto-docs, sterke type-safety met Pydantic + mypy, snelle tooling met uv + Ruff
-- **Moeilijker:** SQLAlchemy 2.0 async heeft een leercurve, uv is relatief nieuw (maar snel mature)
-- **Constraints:** Alle backend code moet Python 3.12+ zijn, async-first, type-checked met mypy --strict, geformat met Ruff
+- **Easier:** Fast iteration with FastAPI + auto-docs, strong type safety with Pydantic + mypy, fast tooling with uv + Ruff
+- **Harder:** SQLAlchemy 2.0 async has a learning curve, uv is relatively new (but maturing fast)
+- **Constraints:** All backend code must be Python 3.12+, async-first, type-checked with mypy --strict, formatted with Ruff

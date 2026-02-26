@@ -1,27 +1,27 @@
 # C4 Level 3 — Components
 
-> Modules binnen containers. Hoe is elke container intern georganiseerd?
+> Modules within containers. How is each container organized internally?
 
 ## Frontend Components
 
-| Module | Pad | Verantwoordelijkheid |
+| Module | Path | Responsibility |
 |---|---|---|
 | Pages/Routes | `src/app/` | Routing, layouts, error boundaries |
 | Feature Modules | `src/features/{name}/` | Colocated: components, hooks, api, types |
-| UI Primitives | `src/components/ui/` | Herbruikbare presentatie-componenten (shadcn) |
+| UI Primitives | `src/components/ui/` | Reusable presentational components (shadcn) |
 | Providers | `src/components/providers/` | Context providers (QueryProvider) |
-| Shared Hooks | `src/hooks/` | Gedeelde hooks |
+| Shared Hooks | `src/hooks/` | Shared hooks |
 | Shared Lib | `src/lib/` | Cross-feature utilities (cn, api client) |
-| Shared Types | `src/types/` | Alleen cross-feature TypeScript types |
+| Shared Types | `src/types/` | Cross-feature TypeScript types only |
 
 ## Backend Components
 
-| Module | Pad | Verantwoordelijkheid |
+| Module | Path | Responsibility |
 |---|---|---|
 | App Core | `app/` | Entry point, config |
 | Feature Modules | `features/{name}/` | Colocated: router, service, repository, schema |
 | Database | `shared/db/` | Connection, base models, models, migrations |
-| Auth | `shared/auth/` | Authenticatie/autorisatie |
+| Auth | `shared/auth/` | Authentication/authorization |
 | Middleware | `shared/middleware/` | CORS, rate limiting, request logging |
 | Shared Lib | `shared/lib/` | Cross-feature utilities |
 
@@ -44,32 +44,24 @@ Frontend                          Backend
 └─────────────────────┘          └─────────────────────┘
 ```
 
-## Architectuurpatronen
+## Architecture Patterns
 
 ### Frontend
 - **Pattern:** Component → Hook → API Layer
-- **State:** TanStack Query (server) + Zustand (client, wanneer nodig)
+- **State:** TanStack Query (server) + Zustand (client, when needed)
 - **Routing:** App Router
 
 ### Backend
 - **Pattern:** Router → Service → Repository (per feature, colocated)
 - **Colocation:** Feature-first — router, service, repository, schema per feature
-- **Injectie:** Dependency Injection via FastAPI `Depends()`
-- **Validatie:** Schema validation op router-niveau
+- **Injection:** Dependency Injection via FastAPI `Depends()`
+- **Validation:** Schema validation at router level
 
-## File Size Limieten
+## File Size Limits
 
-| Type | Max regels | Waarschuwing bij |
-|---|---|---|
-| Frontend Component | 200 | 150 |
-| Frontend Hook | 150 | 100 |
-| Frontend API module | 100 | 75 |
-| Feature Router | 500 | 400 |
-| Feature Service | 300 | 250 |
-| Feature Repository | 200 | 150 |
-| Feature Schema | 150 | 100 |
+See `frontend/CLAUDE.md` and `backend/CLAUDE.md` for current file limits per type.
 
-## Gerelateerde ADRs
+## Related ADRs
 
-- ADR-0001: Frontend tech stack keuze
-- ADR-0002: Backend tech stack keuze
+- ADR-0001: Frontend tech stack choice
+- ADR-0002: Backend tech stack choice

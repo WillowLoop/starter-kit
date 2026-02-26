@@ -1,16 +1,21 @@
-# Starter Kit — TODO
+# Extension Opportunities
+
+Ideas and opportunities for extending this starter-kit.
+Larger initiatives → epic in `docs/planning/roadmap/`.
+
+Format: `- [ ] **Title** — Description`
+Optional sub-bullets for scope. Done items get a date.
 
 ## Open
 
-- [ ] **Backend- en frontend-conventies uit skills halen en in CLAUDE.md zetten**
-  Doorloop de bestaande skills in `.claude/skills/` en de bronbestanden (`frontend-stack-guide.md`, `backend-stack-guide.md`, `design-patterns.md`) en extraheer de concrete conventies/regels. Zet deze als feiten en regels in `frontend/CLAUDE.md` en `backend/CLAUDE.md`. Houd het token budget aan (~100-200 tokens per bestand). Procedurele content (stap-voor-stap) blijft in skills; alleen feiten en regels gaan naar CLAUDE.md.
-
-- [ ] **Skills reviewen en bepalen welke skills nog toegevoegd moeten worden**
-  Review alle bestaande skills in `.claude/skills/`, agents en commands. Bepaal welke aanvullende skills nodig zijn voor de starter-kit, bijvoorbeeld: feature-scaffold, design-system patterns, API client setup, auth flow, of andere herhaalbare procedures die als skill gedocumenteerd moeten worden conform de Context Hygiene architectuur.
-
-- [ ] **Roadmap, todos, in progress, planning structuur opzetten**
-  Bepaal hoe roadmap, TODO's, in-progress items en planning gestructureerd worden binnen de starter-kit. Denk aan: waar leven TODO's (todo/todo.md vs GitHub Issues vs project board), hoe worden items geprioriteerd, hoe wordt voortgang bijgehouden, en hoe past dit in de Context Hygiene architectuur (CLAUDE.md vs ADR vs skill).
+- [ ] **Extend skills** — Review `.claude/skills/` and add missing implementation skills
+  - feature-scaffold (create new feature frontend/backend)
+  - design-system patterns (component creation)
+  - API client setup (frontend↔backend integration)
+  - auth flow (authentication/authorization)
+- [ ] **Fill roadmap** — Replace placeholder epics in `docs/planning/roadmap/overview.md` with concrete epics including planning and priority
+- [ ] **Define planning workflow** — Decide how TODOs, issues and progress are tracked (todo.md vs GitHub Issues vs combination) and document the choice
 
 ## Done
 
-_(nog geen afgeronde items)_
+- [x] **Frontend and backend conventions in CLAUDE.md** — Conventions documented in `frontend/CLAUDE.md` and `backend/CLAUDE.md` (2026-02-14)

@@ -7,55 +7,55 @@
 
 ## Context
 
-Het AIpoweredMakers project heeft een frontend nodig die snel te ontwikkelen is, goede DX biedt, en schaalbaar is voor toekomstige features. De keuze voor framework, styling, component library, package manager en test runner moet nu gemaakt worden omdat het de basis legt voor alle toekomstige frontend ontwikkeling.
+The AIpoweredMakers project needs a frontend that is fast to develop, offers good DX, and is scalable for future features. The choice of framework, styling, component library, package manager and test runner must be made now because it lays the foundation for all future frontend development.
 
 ## Decision
 
-- **Framework:** Next.js 15 (App Router) + TypeScript
+- **Framework:** Next.js 16 (App Router) + TypeScript
 - **Styling:** Tailwind CSS + shadcn/ui
 - **Package manager:** pnpm
 - **Test runner:** Vitest + Testing Library
-- **Dev server:** Turbopack (dev only, productie builds via webpack)
+- **Dev server:** Turbopack (dev only, production builds via webpack)
 
 ## Reasoning Chain
 
-1. We bouwen een web applicatie met SEO-behoefte en server-side rendering → SSR-framework nodig → Next.js of Remix
-2. Next.js heeft het grootste ecosysteem, beste Vercel-integratie en meeste community support → Next.js 15 met App Router
-3. Styling moet utility-first zijn voor snelle iteratie en kleine bundle size → Tailwind CSS
-4. Componenten moeten accessible en customizable zijn zonder vendor lock-in → shadcn/ui (kopieert code, geen runtime dependency)
-5. Package manager moet snel zijn en strict omgaan met dependencies → pnpm (striktere node_modules structuur dan npm/yarn)
-6. Test runner moet native ESM/TS ondersteunen en snel zijn → Vitest
+1. We are building a web application with SEO needs and server-side rendering → SSR framework needed → Next.js or Remix
+2. Next.js has the largest ecosystem, best Vercel integration and most community support → Next.js 16 with App Router
+3. Styling must be utility-first for fast iteration and small bundle size → Tailwind CSS
+4. Components must be accessible and customizable without vendor lock-in → shadcn/ui (copies code, no runtime dependency)
+5. Package manager must be fast and strict with dependencies → pnpm (stricter node_modules structure than npm/yarn)
+6. Test runner must natively support ESM/TS and be fast → Vitest
 
-### Vitest vs `next test` (experimenteel)
+### Vitest vs `next test` (experimental)
 
-Next.js biedt experimentele `next test` integratie, maar Vitest is gekozen omdat:
-- Vitest is sneller door native ESM en parallel test execution
-- Vitest is onafhankelijk van de Next.js build pipeline — testen draaien ook als Next.js breekt
-- Vitest heeft een stabiel, mature ecosysteem met uitgebreide plugin support
-- `next test` is nog experimenteel en kan breaking changes hebben
+Next.js offers experimental `next test` integration, but Vitest was chosen because:
+- Vitest is faster due to native ESM and parallel test execution
+- Vitest is independent of the Next.js build pipeline — tests run even if Next.js breaks
+- Vitest has a stable, mature ecosystem with extensive plugin support
+- `next test` is still experimental and may have breaking changes
 
 ### Turbopack scope
 
-Turbopack wordt alleen voor de dev server gebruikt (`next dev --turbopack`). Productie builds gebruiken de standaard webpack bundler omdat Turbopack voor production builds nog niet stabiel is.
+Turbopack is only used for the dev server (`next dev --turbopack`). Production builds use the standard webpack bundler because Turbopack for production builds is not yet stable.
 
 ## Alternatives Considered
 
-| Alternatief | Waarom afgewezen |
+| Alternative | Why rejected |
 |---|---|
-| Remix | Kleiner ecosysteem, minder hosting opties, minder community resources |
-| Vite SPA (React) | Geen SSR/SSG out of the box, vereist extra setup voor SEO |
-| Jest | Langzamer, vereist transformers voor ESM/TS, complexere configuratie |
-| npm | Minder strikte dependency resolution, langzamer dan pnpm |
-| yarn | Geen significant voordeel boven pnpm, pnpm heeft strictere hoisting |
-| MUI / Chakra UI | Runtime CSS-in-JS overhead, vendor lock-in, minder controle over markup |
+| Remix | Smaller ecosystem, fewer hosting options, fewer community resources |
+| Vite SPA (React) | No SSR/SSG out of the box, requires extra setup for SEO |
+| Jest | Slower, requires transformers for ESM/TS, more complex configuration |
+| npm | Less strict dependency resolution, slower than pnpm |
+| yarn | No significant advantage over pnpm, pnpm has stricter hoisting |
+| MUI / Chakra UI | Runtime CSS-in-JS overhead, vendor lock-in, less control over markup |
 
 ## Consequences
 
-- **Makkelijker:** Snelle iteratie met Tailwind + shadcn/ui, goede DX met TypeScript + Vitest, eenvoudige deployment naar Vercel
-- **Moeilijker:** Next.js App Router heeft een leercurve (Server vs Client Components), Turbopack is dev-only
-- **Constraints:** Alle frontend code moet TypeScript zijn, styling via Tailwind (geen CSS modules), testen via Vitest (niet Jest)
+- **Easier:** Fast iteration with Tailwind + shadcn/ui, good DX with TypeScript + Vitest, easy deployment to Vercel
+- **Harder:** Next.js App Router has a learning curve (Server vs Client Components), Turbopack is dev-only
+- **Constraints:** All frontend code must be TypeScript, styling via Tailwind (no CSS modules), testing via Vitest (not Jest)
 
 ---
 ## Addendum — 2026-02-26
 
-Next.js is geüpgraded van 15 naar 16. De architectuurkeuzes (App Router, TypeScript, Tailwind, shadcn/ui, pnpm, Vitest) blijven ongewijzigd.
+Next.js upgraded from 15 to 16. Architecture choices (App Router, TypeScript, Tailwind, shadcn/ui, pnpm, Vitest) remain unchanged.

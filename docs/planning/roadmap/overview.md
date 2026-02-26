@@ -1,25 +1,25 @@
 # Roadmap
 
-## Huidige focus
+## Current focus
 
-**Q? 2026**: [thema]
+**Q? 2026**: [theme]
 
-## Overzicht
+## Overview
 
-| Epic | Status | Prioriteit | Target | Impact |
+| Epic | Status | Priority | Target | Impact |
 |---|---|---|---|---|
-| [Epic naam] | 🔴 Not started | P? | Q? | Frontend / Backend / Both |
+| [Epic name] | 🔴 Not started | P? | Q? | Frontend / Backend / Both |
 
-## Status legenda
+## Status legend
 
-- 🔴 **Not started** — gepland, nog niet begonnen
-- 🟡 **In progress** — actief in ontwikkeling
-- 🟢 **Done** — afgerond en live
-- ⏸️ **Paused** — on hold met reden
+- 🔴 **Not started** — planned, not yet begun
+- 🟡 **In progress** — actively in development
+- 🟢 **Done** — completed and live
+- ⏸️ **Paused** — on hold with reason
 
-## Hoe deze roadmap werkt
+## How this roadmap works
 
-- Elk epic heeft een eigen bestand in `roadmap/` (gebruik [_template.md](_template.md))
-- Epics verwijzen naar relevante [C4 docs](../c4/) en [ADRs](../adr/)
-- Volgorde = prioriteit (hoogste bovenaan)
-- Update dit overzicht bij elke statuswijziging
+- Each epic has its own file in `roadmap/` (use [_template.md](_template.md))
+- Epics reference relevant [C4 docs](../c4/) and [ADRs](../adr/)
+- Order = priority (highest at top)
+- Update this overview on every status change
