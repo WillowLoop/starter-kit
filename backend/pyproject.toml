@@ -24,6 +24,8 @@ dev = [
     "mypy>=1.19.0",
     "ruff>=0.14.0",
     "aiosqlite>=0.20.0",
+    "bandit>=1.7.0",
+    "pip-audit>=2.7.0",
 ]
 
 [build-system]
@@ -69,3 +71,12 @@ exclude = ["migrations/"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+[tool.bandit]
+targets = ["app", "features", "shared"]
+skips = [
+    "B101",  # assert_used — type narrowing in prod code
+    "B608",  # hardcoded_sql_expressions — features/health/service.py uses text("SELECT 1")
+             # B608 detects any string-literal with SQL keywords, regardless of string interpolation.
+             # Global skip prevents false positives on all SQLAlchemy text() calls with fixed queries.
+]

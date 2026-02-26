@@ -6,7 +6,7 @@
 
 | Container | Technologie | Doel | Poort | Deploy |
 |---|---|---|---|---|
-| Frontend | Next.js 15, TypeScript, Tailwind CSS, shadcn/ui | Web UI | 3000 | [Vercel / Netlify / ...] |
+| Frontend | Next.js 16, TypeScript, Tailwind CSS, shadcn/ui | Web UI | 3000 | [Vercel / Netlify / ...] |
 | Backend API | FastAPI, Python 3.12+, SQLAlchemy 2.0 | Business logic + API | 8000 | [Railway / AWS / ...] |
 | Database | PostgreSQL 16 | Data persistentie | 5432 | [Managed / Self-hosted] |
 | Cache | Redis 7 | Sessies, caching | 6379 | [Managed / Self-hosted] |
@@ -32,7 +32,7 @@
 ## Per container
 
 ### Frontend
-- **Stack:** Next.js 15 (App Router), TypeScript, Tailwind CSS, shadcn/ui
+- **Stack:** Next.js 16 (App Router), TypeScript, Tailwind CSS, shadcn/ui
 - **Package manager:** pnpm
 - **Testing:** Vitest + Testing Library
 - **Dev server:** Turbopack (dev only)

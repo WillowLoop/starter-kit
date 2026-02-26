@@ -23,7 +23,7 @@ Drie mechanismen, elk met een eigen doel:
 
 | Document | Beschrijft |
 |---|---|
-| [adr/0001-frontend-tech-stack.md](adr/0001-frontend-tech-stack.md) | Next.js 15 + TS + Tailwind + shadcn/ui + pnpm + Vitest |
+| [adr/0001-frontend-tech-stack.md](adr/0001-frontend-tech-stack.md) | Next.js 16 + TS + Tailwind + shadcn/ui + pnpm + Vitest |
 | [adr/0002-backend-tech-stack.md](adr/0002-backend-tech-stack.md) | FastAPI + Python 3.12+ + PostgreSQL + SQLAlchemy + uv + Ruff + pytest |
 | [adr/_template.md](adr/_template.md) | Template voor nieuwe ADRs |
 

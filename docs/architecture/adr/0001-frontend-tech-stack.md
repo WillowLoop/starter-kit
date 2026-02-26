@@ -54,3 +54,8 @@ Turbopack wordt alleen voor de dev server gebruikt (`next dev --turbopack`). Pro
 - **Makkelijker:** Snelle iteratie met Tailwind + shadcn/ui, goede DX met TypeScript + Vitest, eenvoudige deployment naar Vercel
 - **Moeilijker:** Next.js App Router heeft een leercurve (Server vs Client Components), Turbopack is dev-only
 - **Constraints:** Alle frontend code moet TypeScript zijn, styling via Tailwind (geen CSS modules), testen via Vitest (niet Jest)
+
+---
+## Addendum — 2026-02-26
+
+Next.js is geüpgraded van 15 naar 16. De architectuurkeuzes (App Router, TypeScript, Tailwind, shadcn/ui, pnpm, Vitest) blijven ongewijzigd.

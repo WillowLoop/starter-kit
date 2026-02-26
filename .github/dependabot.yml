@@ -1,0 +1,33 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+    groups:
+      actions: { patterns: ["*"] }
+    labels: ["dependencies", "ci"]
+
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:30"
+    groups:
+      frontend-deps: { patterns: ["*"] }
+    labels: ["dependencies", "frontend"]
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: pip
+    directory: /backend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+    groups:
+      python-deps: { patterns: ["*"] }
+    labels: ["dependencies", "backend"]
+    open-pull-requests-limit: 10

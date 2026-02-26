@@ -1,0 +1,10 @@
+# .trivyignore — Trivy vulnerability suppression
+# Format: CVE-YYYY-NNNNN  # reden + vervaldatum
+# Review dit bestand elk kwartaal.
+#
+# Voeg suppressions ALLEEN toe met:
+# 1. Gedocumenteerde reden waarom het CVE niet van toepassing is
+# 2. Vervaldatum (maximaal 6 maanden)
+#
+# Voorbeeld:
+# CVE-2023-XXXXX  # False positive in dev-only dep, expires 2026-06-01

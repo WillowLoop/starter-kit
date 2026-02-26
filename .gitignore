@@ -1,0 +1,39 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+
+# Credentials / tokens
+*.pem
+*.key
+
+# Confidential data
+backend/data/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.egg-info/
+.venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Node / Next.js
+node_modules/
+.next/
+
+# Claude Code local settings
+.claude/settings.local.json
+.claude/verify.yml          # may contain test credentials & environment-specific config
+.claude/plans/              # ephemeral session plans (approved copies go to docs/planning/plans/)
