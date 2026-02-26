@@ -1,57 +1,57 @@
-# OKLch Kleurruimte Referentie
+# OKLch Color Space Reference
 
-## Wat is OKLch?
+## What is OKLch?
 
-OKLch is een perceptueel uniforme kleurruimte. Anders dan hex/RGB, waar gelijke numerieke stappen niet gelijk overkomen op het oog, is OKLch ontworpen zodat gelijke stappen in de waarden ook gelijk aanvoelen.
+OKLch is a perceptually uniform color space. Unlike hex/RGB, where equal numerical steps don't appear equal to the eye, OKLch is designed so that equal steps in values also feel equal.
 
-**Formaat**: `oklch(L C h)` of `oklch(L C h / alpha)`
+**Format**: `oklch(L C h)` or `oklch(L C h / alpha)`
 
-| Parameter | Bereik | Beschrijving |
-|-----------|--------|-------------|
-| **L** (Lightness) | `0` – `1` | Perceptuele helderheid. `0` = zwart, `1` = wit |
-| **C** (Chroma) | `0` – `~0.4` | Kleurverzadiging. `0` = grijs, hogere waarden = levendiger. Praktisch max ~0.37 |
-| **h** (Hue) | `0` – `360` | Kleurtint als hoek op het kleurenwiel |
+| Parameter | Range | Description |
+|-----------|-------|-------------|
+| **L** (Lightness) | `0` – `1` | Perceptual lightness. `0` = black, `1` = white |
+| **C** (Chroma) | `0` – `~0.4` | Color saturation. `0` = gray, higher values = more vivid. Practical max ~0.37 |
+| **h** (Hue) | `0` – `360` | Hue as angle on the color wheel |
 
-## Hue Referentie
+## Hue Reference
 
-| Hoek | Kleur |
-|------|-------|
-| 0–30 | Rood → Rood-oranje |
-| 30–70 | Oranje → Geel |
-| 70–140 | Geel → Groen |
-| 140–200 | Groen → Cyaan |
-| 200–260 | Cyaan → Blauw |
-| 260–310 | Blauw → Paars/Violet |
-| 310–360 | Magenta → Rood |
+| Angle | Color |
+|-------|-------|
+| 0–30 | Red → Red-orange |
+| 30–70 | Orange → Yellow |
+| 70–140 | Yellow → Green |
+| 140–200 | Green → Cyan |
+| 200–260 | Cyan → Blue |
+| 260–310 | Blue → Purple/Violet |
+| 310–360 | Magenta → Red |
 
-## Veelvoorkomende Kleuren: Hex → OKLch
+## Common Colors: Hex → OKLch
 
-### Basiskleuren
+### Base Colors
 
-| Kleur | Hex | OKLch |
+| Color | Hex | OKLch |
 |-------|-----|-------|
-| Wit | `#ffffff` | `oklch(1 0 0)` |
-| Zwart | `#000000` | `oklch(0 0 0)` |
-| Rood | `#ef4444` | `oklch(0.637 0.237 25.331)` |
-| Oranje | `#f97316` | `oklch(0.724 0.192 47.604)` |
+| White | `#ffffff` | `oklch(1 0 0)` |
+| Black | `#000000` | `oklch(0 0 0)` |
+| Red | `#ef4444` | `oklch(0.637 0.237 25.331)` |
+| Orange | `#f97316` | `oklch(0.724 0.192 47.604)` |
 | Amber | `#f59e0b` | `oklch(0.769 0.188 70.08)` |
-| Geel | `#eab308` | `oklch(0.795 0.184 86.047)` |
-| Groen | `#22c55e` | `oklch(0.723 0.219 149.579)` |
+| Yellow | `#eab308` | `oklch(0.795 0.184 86.047)` |
+| Green | `#22c55e` | `oklch(0.723 0.219 149.579)` |
 | Emerald | `#10b981` | `oklch(0.696 0.17 162.48)` |
 | Teal | `#14b8a6` | `oklch(0.697 0.146 174.358)` |
-| Cyaan | `#06b6d4` | `oklch(0.715 0.143 215.221)` |
-| Blauw | `#3b82f6` | `oklch(0.623 0.214 259.815)` |
+| Cyan | `#06b6d4` | `oklch(0.715 0.143 215.221)` |
+| Blue | `#3b82f6` | `oklch(0.623 0.214 259.815)` |
 | Indigo | `#6366f1` | `oklch(0.585 0.233 277.117)` |
 | Violet | `#8b5cf6` | `oklch(0.606 0.25 292.717)` |
-| Paars | `#a855f7` | `oklch(0.627 0.265 303.9)` |
+| Purple | `#a855f7` | `oklch(0.627 0.265 303.9)` |
 | Fuchsia | `#d946ef` | `oklch(0.667 0.295 322.15)` |
 | Pink | `#ec4899` | `oklch(0.656 0.241 354.308)` |
 | Rose | `#f43f5e` | `oklch(0.645 0.246 16.439)` |
 
-### Neutrale Tinten (Neutral / Zinc)
+### Neutral Shades (Neutral / Zinc)
 
-| Tint | Hex | OKLch |
-|------|-----|-------|
+| Shade | Hex | OKLch |
+|-------|-----|-------|
 | 50 | `#fafafa` | `oklch(0.985 0 0)` |
 | 100 | `#f5f5f5` | `oklch(0.97 0 0)` |
 | 200 | `#e5e5e5` | `oklch(0.922 0 0)` |
@@ -64,27 +64,27 @@ OKLch is een perceptueel uniforme kleurruimte. Anders dan hex/RGB, waar gelijke 
 | 900 | `#171717` | `oklch(0.205 0 0)` |
 | 950 | `#0a0a0a` | `oklch(0.145 0 0)` |
 
-### Populaire Brand Kleuren (benaderingen)
+### Popular Brand Colors (approximations)
 
-| Brand | Kleur | Hex | OKLch |
+| Brand | Color | Hex | OKLch |
 |-------|-------|-----|-------|
-| Stripe | Paars | `#635bff` | `oklch(0.556 0.249 277.023)` |
-| Stripe | Blauw | `#0a2540` | `oklch(0.243 0.042 245.935)` |
-| Linear | Paars | `#5e6ad2` | `oklch(0.562 0.162 277.892)` |
-| Vercel | Zwart | `#000000` | `oklch(0 0 0)` |
-| Tailwind | Blauw | `#38bdf8` | `oklch(0.773 0.15 230.067)` |
-| GitHub | Blauw | `#1f6feb` | `oklch(0.546 0.196 256.802)` |
-| Figma | Rood | `#f24e1e` | `oklch(0.629 0.222 28.717)` |
+| Stripe | Purple | `#635bff` | `oklch(0.556 0.249 277.023)` |
+| Stripe | Blue | `#0a2540` | `oklch(0.243 0.042 245.935)` |
+| Linear | Purple | `#5e6ad2` | `oklch(0.562 0.162 277.892)` |
+| Vercel | Black | `#000000` | `oklch(0 0 0)` |
+| Tailwind | Blue | `#38bdf8` | `oklch(0.773 0.15 230.067)` |
+| GitHub | Blue | `#1f6feb` | `oklch(0.546 0.196 256.802)` |
+| Figma | Red | `#f24e1e` | `oklch(0.629 0.222 28.717)` |
 
-## shadcn/ui Default Palette als Referentie
+## shadcn/ui Default Palette as Reference
 
-De volledige shadcn/ui neutral palette (zoals gebruikt in de starter-kit):
+The full shadcn/ui neutral palette (as used in the starter kit):
 
 ### Light mode (`:root`)
 
 ```css
---background: oklch(1 0 0);           /* #ffffff — Wit */
---foreground: oklch(0.145 0 0);       /* #0a0a0a — Bijna zwart */
+--background: oklch(1 0 0);           /* #ffffff — White */
+--foreground: oklch(0.145 0 0);       /* #0a0a0a — Near black */
 --card: oklch(1 0 0);                 /* #ffffff */
 --card-foreground: oklch(0.145 0 0);  /* #0a0a0a */
 --popover: oklch(1 0 0);             /* #ffffff */
@@ -120,51 +120,51 @@ De volledige shadcn/ui neutral palette (zoals gebruikt in de starter-kit):
 --muted-foreground: oklch(0.708 0 0); /* #a3a3a3 */
 --accent: oklch(0.269 0 0);          /* #262626 */
 --accent-foreground: oklch(0.985 0 0); /* #fafafa */
---destructive: oklch(0.704 0.191 22.216); /* ~#f43f5e lichter voor dark */
---border: oklch(1 0 0 / 10%);        /* Wit met 10% alpha */
---input: oklch(1 0 0 / 15%);         /* Wit met 15% alpha */
+--destructive: oklch(0.704 0.191 22.216); /* ~#f43f5e lighter for dark */
+--border: oklch(1 0 0 / 10%);        /* White with 10% alpha */
+--input: oklch(1 0 0 / 15%);         /* White with 15% alpha */
 --ring: oklch(0.556 0 0);            /* #737373 */
 ```
 
-## Conversie Tips
+## Conversion Tips
 
-### Hex naar OKLch
+### Hex to OKLch
 
-1. Gebruik browser DevTools: typ hex in, klik op kleurvierkant, schakel naar OKLch
-2. CSS: `oklch(from #hex l c h)` (relative color syntax, breed ondersteund)
-3. Online: oklch.com of colorjs.io
+1. Use browser DevTools: type hex, click color swatch, switch to OKLch
+2. CSS: `oklch(from #hex l c h)` (relative color syntax, widely supported)
+3. Online: oklch.com or colorjs.io
 
-### OKLch Manipulatie
+### OKLch Manipulation
 
-| Operatie | Wat te doen |
-|----------|-------------|
-| **Lichter maken** | Verhoog L (bijv. `0.5` → `0.7`) |
-| **Donkerder maken** | Verlaag L (bijv. `0.5` → `0.3`) |
-| **Meer verzadigd** | Verhoog C (bijv. `0.15` → `0.25`) |
-| **Minder verzadigd** | Verlaag C (bijv. `0.25` → `0.10`) |
-| **Complementaire kleur** | h + 180° (bijv. `25` → `205`) |
-| **Analoge kleuren** | h ± 30° |
+| Operation | What to do |
+|-----------|-----------|
+| **Lighten** | Increase L (e.g. `0.5` → `0.7`) |
+| **Darken** | Decrease L (e.g. `0.5` → `0.3`) |
+| **More saturated** | Increase C (e.g. `0.15` → `0.25`) |
+| **Less saturated** | Decrease C (e.g. `0.25` → `0.10`) |
+| **Complementary color** | h + 180° (e.g. `25` → `205`) |
+| **Analogous colors** | h ± 30° |
 | **Triadic** | h, h+120°, h+240° |
 
-### Dark Mode Transformatie Regels
+### Dark Mode Transformation Rules
 
-| Variabele | Light → Dark transformatie |
-|-----------|--------------------------|
-| `background` | L: hoog → laag (`1` → `0.145`) |
-| `foreground` | L: laag → hoog (`0.145` → `0.985`) |
-| `primary` | L inverteren, C behouden, h behouden |
-| `primary-foreground` | Tegenovergestelde van primary |
+| Variable | Light → Dark transformation |
+|----------|---------------------------|
+| `background` | L: high → low (`1` → `0.145`) |
+| `foreground` | L: low → high (`0.145` → `0.985`) |
+| `primary` | Invert L, keep C, keep h |
+| `primary-foreground` | Opposite of primary |
 | `secondary/muted/accent` | L: ~0.97 → ~0.269 |
-| `destructive` | L verhogen voor leesbaarheid, C licht verlagen |
+| `destructive` | Increase L for readability, slightly decrease C |
 | `border` | Solid → alpha transparency (`oklch(1 0 0 / 10%)`) |
-| `input` | Iets hogere alpha dan border (`/ 15%`) |
-| `chart-*` | Hogere chroma, aangepaste hues voor donkere achtergrond |
+| `input` | Slightly higher alpha than border (`/ 15%`) |
+| `chart-*` | Higher chroma, adjusted hues for dark background |
 
-### Verplichte Conventies
+### Required Conventions
 
-1. **Altijd hex commentaar**: `--primary: oklch(0.556 0.249 277.023); /* #635bff */`
-2. **Verifieer visueel**: Open browser DevTools → Computed Styles → controleer kleur
-3. **L validatie**: L moet tussen 0 en 1 liggen
-4. **C validatie**: C moet tussen 0 en ~0.4 liggen (meeste kleuren < 0.3)
-5. **h validatie**: h moet tussen 0 en 360 liggen
-6. **Neutrale kleuren**: C = 0, h = 0 (of weggelaten)
+1. **Always hex comment**: `--primary: oklch(0.556 0.249 277.023); /* #635bff */`
+2. **Verify visually**: Open browser DevTools → Computed Styles → check color
+3. **L validation**: L must be between 0 and 1
+4. **C validation**: C must be between 0 and ~0.4 (most colors < 0.3)
+5. **h validation**: h must be between 0 and 360
+6. **Neutral colors**: C = 0, h = 0 (or omitted)

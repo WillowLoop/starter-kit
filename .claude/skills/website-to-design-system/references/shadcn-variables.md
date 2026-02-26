@@ -1,72 +1,72 @@
 # shadcn/ui CSS Variables Reference
 
-Complete lijst van alle shadcn/ui CSS variabelen. Gebruik als checklist: elk design system MOET al deze variabelen definiëren in zowel `:root` als `.dark`.
+Complete list of all shadcn/ui CSS variables. Use as checklist: every design system MUST define all these variables in both `:root` and `.dark`.
 
-## Variabelen Overzicht
+## Variables Overview
 
 ### Core
 
-| Variabele | Beschrijving | `:root` default (OKLch) | `.dark` default (OKLch) |
-|-----------|-------------|------------------------|------------------------|
-| `--background` | Pagina achtergrond | `oklch(1 0 0)` | `oklch(0.145 0 0)` |
-| `--foreground` | Standaard tekst | `oklch(0.145 0 0)` | `oklch(0.985 0 0)` |
-| `--primary` | Primaire acties, links, knoppen | `oklch(0.205 0 0)` | `oklch(0.922 0 0)` |
-| `--primary-foreground` | Tekst op primary achtergrond | `oklch(0.985 0 0)` | `oklch(0.205 0 0)` |
-| `--secondary` | Secundaire acties | `oklch(0.97 0 0)` | `oklch(0.269 0 0)` |
-| `--secondary-foreground` | Tekst op secondary achtergrond | `oklch(0.205 0 0)` | `oklch(0.985 0 0)` |
-| `--muted` | Gedempte achtergronden | `oklch(0.97 0 0)` | `oklch(0.269 0 0)` |
-| `--muted-foreground` | Gedempte tekst (placeholders, helpers) | `oklch(0.556 0 0)` | `oklch(0.708 0 0)` |
-| `--accent` | Accent achtergrond (hover states) | `oklch(0.97 0 0)` | `oklch(0.269 0 0)` |
-| `--accent-foreground` | Tekst op accent achtergrond | `oklch(0.205 0 0)` | `oklch(0.985 0 0)` |
-| `--destructive` | Destructieve/fout acties | `oklch(0.577 0.245 27.325)` | `oklch(0.704 0.191 22.216)` |
+| Variable | Description | `:root` default (OKLch) | `.dark` default (OKLch) |
+|----------|-------------|------------------------|------------------------|
+| `--background` | Page background | `oklch(1 0 0)` | `oklch(0.145 0 0)` |
+| `--foreground` | Default text | `oklch(0.145 0 0)` | `oklch(0.985 0 0)` |
+| `--primary` | Primary actions, links, buttons | `oklch(0.205 0 0)` | `oklch(0.922 0 0)` |
+| `--primary-foreground` | Text on primary background | `oklch(0.985 0 0)` | `oklch(0.205 0 0)` |
+| `--secondary` | Secondary actions | `oklch(0.97 0 0)` | `oklch(0.269 0 0)` |
+| `--secondary-foreground` | Text on secondary background | `oklch(0.205 0 0)` | `oklch(0.985 0 0)` |
+| `--muted` | Muted backgrounds | `oklch(0.97 0 0)` | `oklch(0.269 0 0)` |
+| `--muted-foreground` | Muted text (placeholders, helpers) | `oklch(0.556 0 0)` | `oklch(0.708 0 0)` |
+| `--accent` | Accent background (hover states) | `oklch(0.97 0 0)` | `oklch(0.269 0 0)` |
+| `--accent-foreground` | Text on accent background | `oklch(0.205 0 0)` | `oklch(0.985 0 0)` |
+| `--destructive` | Destructive/error actions | `oklch(0.577 0.245 27.325)` | `oklch(0.704 0.191 22.216)` |
 
 ### Surface
 
-| Variabele | Beschrijving | `:root` default | `.dark` default |
-|-----------|-------------|----------------|----------------|
-| `--card` | Card achtergrond | `oklch(1 0 0)` | `oklch(0.205 0 0)` |
-| `--card-foreground` | Tekst op cards | `oklch(0.145 0 0)` | `oklch(0.985 0 0)` |
-| `--popover` | Popover/dropdown achtergrond | `oklch(1 0 0)` | `oklch(0.205 0 0)` |
-| `--popover-foreground` | Tekst in popovers | `oklch(0.145 0 0)` | `oklch(0.985 0 0)` |
+| Variable | Description | `:root` default | `.dark` default |
+|----------|-------------|----------------|----------------|
+| `--card` | Card background | `oklch(1 0 0)` | `oklch(0.205 0 0)` |
+| `--card-foreground` | Text on cards | `oklch(0.145 0 0)` | `oklch(0.985 0 0)` |
+| `--popover` | Popover/dropdown background | `oklch(1 0 0)` | `oklch(0.205 0 0)` |
+| `--popover-foreground` | Text in popovers | `oklch(0.145 0 0)` | `oklch(0.985 0 0)` |
 
 ### UI Elements
 
-| Variabele | Beschrijving | `:root` default | `.dark` default |
-|-----------|-------------|----------------|----------------|
-| `--border` | Standaard borders, dividers | `oklch(0.922 0 0)` | `oklch(1 0 0 / 10%)` |
+| Variable | Description | `:root` default | `.dark` default |
+|----------|-------------|----------------|----------------|
+| `--border` | Default borders, dividers | `oklch(0.922 0 0)` | `oklch(1 0 0 / 10%)` |
 | `--input` | Input borders | `oklch(0.922 0 0)` | `oklch(1 0 0 / 15%)` |
-| `--ring` | Focus ring kleur | `oklch(0.708 0 0)` | `oklch(0.556 0 0)` |
+| `--ring` | Focus ring color | `oklch(0.708 0 0)` | `oklch(0.556 0 0)` |
 
 ### Charts
 
-| Variabele | Beschrijving | `:root` default | `.dark` default |
-|-----------|-------------|----------------|----------------|
-| `--chart-1` | Grafiek kleur 1 | `oklch(0.646 0.222 41.116)` | `oklch(0.488 0.243 264.376)` |
-| `--chart-2` | Grafiek kleur 2 | `oklch(0.6 0.118 184.704)` | `oklch(0.696 0.17 162.48)` |
-| `--chart-3` | Grafiek kleur 3 | `oklch(0.398 0.07 227.392)` | `oklch(0.769 0.188 70.08)` |
-| `--chart-4` | Grafiek kleur 4 | `oklch(0.828 0.189 84.429)` | `oklch(0.627 0.265 303.9)` |
-| `--chart-5` | Grafiek kleur 5 | `oklch(0.769 0.188 70.08)` | `oklch(0.645 0.246 16.439)` |
+| Variable | Description | `:root` default | `.dark` default |
+|----------|-------------|----------------|----------------|
+| `--chart-1` | Chart color 1 | `oklch(0.646 0.222 41.116)` | `oklch(0.488 0.243 264.376)` |
+| `--chart-2` | Chart color 2 | `oklch(0.6 0.118 184.704)` | `oklch(0.696 0.17 162.48)` |
+| `--chart-3` | Chart color 3 | `oklch(0.398 0.07 227.392)` | `oklch(0.769 0.188 70.08)` |
+| `--chart-4` | Chart color 4 | `oklch(0.828 0.189 84.429)` | `oklch(0.627 0.265 303.9)` |
+| `--chart-5` | Chart color 5 | `oklch(0.769 0.188 70.08)` | `oklch(0.645 0.246 16.439)` |
 
 ### Sidebar
 
-| Variabele | Beschrijving | `:root` default | `.dark` default |
-|-----------|-------------|----------------|----------------|
-| `--sidebar` | Sidebar achtergrond | `oklch(0.985 0 0)` | `oklch(0.205 0 0)` |
-| `--sidebar-foreground` | Sidebar tekst | `oklch(0.145 0 0)` | `oklch(0.985 0 0)` |
-| `--sidebar-primary` | Sidebar actief item | `oklch(0.205 0 0)` | `oklch(0.488 0.243 264.376)` |
-| `--sidebar-primary-foreground` | Tekst op sidebar actief | `oklch(0.985 0 0)` | `oklch(0.985 0 0)` |
+| Variable | Description | `:root` default | `.dark` default |
+|----------|-------------|----------------|----------------|
+| `--sidebar` | Sidebar background | `oklch(0.985 0 0)` | `oklch(0.205 0 0)` |
+| `--sidebar-foreground` | Sidebar text | `oklch(0.145 0 0)` | `oklch(0.985 0 0)` |
+| `--sidebar-primary` | Sidebar active item | `oklch(0.205 0 0)` | `oklch(0.488 0.243 264.376)` |
+| `--sidebar-primary-foreground` | Text on sidebar active | `oklch(0.985 0 0)` | `oklch(0.985 0 0)` |
 | `--sidebar-accent` | Sidebar hover state | `oklch(0.97 0 0)` | `oklch(0.269 0 0)` |
-| `--sidebar-accent-foreground` | Tekst op sidebar hover | `oklch(0.205 0 0)` | `oklch(0.985 0 0)` |
+| `--sidebar-accent-foreground` | Text on sidebar hover | `oklch(0.205 0 0)` | `oklch(0.985 0 0)` |
 | `--sidebar-border` | Sidebar borders | `oklch(0.922 0 0)` | `oklch(1 0 0 / 10%)` |
 | `--sidebar-ring` | Sidebar focus ring | `oklch(0.708 0 0)` | `oklch(0.556 0 0)` |
 
 ### Radius
 
-| Variabele | Beschrijving | Default |
-|-----------|-------------|---------|
-| `--radius` | Base radius waarde | `0.625rem` (10px) |
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `--radius` | Base radius value | `0.625rem` (10px) |
 
-Alle andere radii worden berekend via `calc()`:
+All other radii are calculated via `calc()`:
 - `--radius-sm`: `calc(var(--radius) - 4px)`
 - `--radius-md`: `calc(var(--radius) - 2px)`
 - `--radius-lg`: `var(--radius)`
@@ -75,21 +75,21 @@ Alle andere radii worden berekend via `calc()`:
 - `--radius-3xl`: `calc(var(--radius) + 12px)`
 - `--radius-4xl`: `calc(var(--radius) + 16px)`
 
-## Dark Mode Patronen
+## Dark Mode Patterns
 
-Belangrijke observaties uit de defaults:
+Key observations from the defaults:
 
-1. **Background/foreground inverteren**: `--background` en `--foreground` wisselen van licht naar donker
-2. **Primary verschuift**: light `0.205` → dark `0.922` (L waarde inverteert)
-3. **Border gebruikt alpha transparency**: dark mode `oklch(1 0 0 / 10%)` i.p.v. een solid kleur
-4. **Input iets meer zichtbaar**: dark mode `oklch(1 0 0 / 15%)` — hogere alpha dan border
-5. **Destructive wordt lichter**: light `0.577` → dark `0.704` (hogere L voor leesbaarheid)
-6. **Chart kleuren veranderen volledig**: andere hues en hogere chroma voor leesbaarheid op donkere achtergrond
-7. **Card/popover = verhoogd oppervlak**: in dark mode `0.205` (lichter dan background `0.145`)
+1. **Background/foreground invert**: `--background` and `--foreground` swap from light to dark
+2. **Primary shifts**: light `0.205` → dark `0.922` (L value inverts)
+3. **Border uses alpha transparency**: dark mode `oklch(1 0 0 / 10%)` instead of a solid color
+4. **Input slightly more visible**: dark mode `oklch(1 0 0 / 15%)` — higher alpha than border
+5. **Destructive becomes lighter**: light `0.577` → dark `0.704` (higher L for readability)
+6. **Chart colors change completely**: different hues and higher chroma for readability on dark background
+7. **Card/popover = elevated surface**: in dark mode `0.205` (lighter than background `0.145`)
 
 ## Completeness Checklist
 
-Bij het genereren van een design system, verifieer dat **al deze variabelen** aanwezig zijn:
+When generating a design system, verify that **all these variables** are present:
 
 ```
 :root / .dark
@@ -103,11 +103,11 @@ Bij het genereren van een design system, verifieer dat **al deze variabelen** aa
 ├── --accent / --accent-foreground
 ├── --destructive
 ├── --border / --input / --ring
-├── --chart-1 t/m --chart-5
+├── --chart-1 through --chart-5
 ├── --sidebar / --sidebar-foreground
 ├── --sidebar-primary / --sidebar-primary-foreground
 ├── --sidebar-accent / --sidebar-accent-foreground
 └── --sidebar-border / --sidebar-ring
 ```
 
-Totaal: **31 variabelen** per mode + `--radius`.
+Total: **31 variables** per mode + `--radius`.

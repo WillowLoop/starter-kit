@@ -6,176 +6,176 @@ description: Complete PRD workflow — interview, draft, review, finalize. Build
 
 Use the slash command `/prd` to start the complete workflow. This command orchestrates a 4-phase process:
 
-1. **Interview (7 gerichte vragen)** — Verzamel context via AskUserQuestion
-2. **Draft PRD** — Vul template in op basis van antwoorden
-3. **Review Loop (max 3 iteraties)** — 3 agents reviewen parallel (product, technical, risk)
-4. **Finalize** — Approve en opslaan
+1. **Interview (7 targeted questions)** — Gather context via AskUserQuestion
+2. **Draft PRD** — Fill template based on answers
+3. **Review Loop (max 3 iterations)** — 3 agents review in parallel (product, technical, risk)
+4. **Finalize** — Approve and save
 
 ---
 
-## Phase 1: PRD Interview (7 Vragen)
+## Phase 1: PRD Interview (7 Questions)
 
-Start de interview met AskUserQuestion. **Elke vraag apart, één per keer.**
+Start the interview with AskUserQuestion. **Each question separately, one at a time.**
 
-### Vraag 1: Probleem & Context
-**Text**: "Welk probleem lossen we op? Voor wie? Waarom nu?"
+### Question 1: Problem & Context
+**Text**: "What problem are we solving? For whom? Why now?"
 
-**Challenge regel**: Als het antwoord vaag is ("een AI tool", "verbeteren user experience"), vraag expliciet door:
-- "Welk specifiek probleem ervaren [persona] nu?"
-- "Wat is het impact op [persona] als dit niet opgelost wordt?"
-- "Waarom is dit nu urgent?"
+**Challenge rule**: If the answer is vague ("an AI tool", "improve user experience"), probe explicitly:
+- "What specific problem do [persona] experience right now?"
+- "What is the impact on [persona] if this isn't solved?"
+- "Why is this urgent now?"
 
-### Vraag 2: Visie & Doelen
-**Text**: "Wat is succes voor dit project? Geef 2-3 concrete, meetbare doelen."
+### Question 2: Vision & Goals
+**Text**: "What does success look like for this project? Give 2-3 concrete, measurable goals."
 
-**Challenge**: Als doelen niet SMART zijn:
-- "Hoe meet je 'betere user experience'?"
-- "Wat is de target waarde en timeframe?"
+**Challenge**: If goals are not SMART:
+- "How do you measure 'better user experience'?"
+- "What is the target value and timeframe?"
 
-### Vraag 3: Doelgroep
-**Text**: "Wie zijn de gebruikers? Definieer 1-3 personas: rol, doel, pijnpunt."
+### Question 3: Target Audience
+**Text**: "Who are the users? Define 1-3 personas: role, goal, pain point."
 
-**Challenge**: Als te vaag:
-- "Welk specifiek pijnpunt heeft [persona]?"
-- "Hoe zou je weten dat dit pijnpunt opgelost is?"
+**Challenge**: If too vague:
+- "What specific pain point does [persona] have?"
+- "How would you know this pain point is solved?"
 
-### Vraag 4: Features (MVP)
-**Text**: "Welke features moeten in deze MVP? Markeer prioriteit per feature: Must/Should/Could/Won't."
+### Question 4: Features (MVP)
+**Text**: "Which features must be in this MVP? Mark priority per feature: Must/Should/Could/Won't."
 
-**Challenge**: Te veel Must-features (meer dan 5-6):
-- "Wat is het absolute minimale om [kernprobleem] op te lossen?"
-- "Kun je 1-2 features naar Should of Could verplaatsen?"
+**Challenge**: Too many Must-features (more than 5-6):
+- "What is the absolute minimum to solve [core problem]?"
+- "Can you move 1-2 features to Should or Could?"
 
-### Vraag 5: Scope Grenzen
-**Text**: "Wat valt NIET in scope voor deze MVP? Waarom?"
+### Question 5: Scope Boundaries
+**Text**: "What is NOT in scope for this MVP? Why?"
 
-**Challenge**: Als out-of-scope items crucaal voelen:
-- "Kun je deze feature echt uitstellen, of is het fundamenteel nodig?"
+**Challenge**: If out-of-scope items feel crucial:
+- "Can you truly postpone this feature, or is it fundamentally needed?"
 
-### Vraag 6: Data & Integraties
-**Text**: "Welke data, APIs, of externe services zijn nodig? Waar komt data vandaan?"
+### Question 6: Data & Integrations
+**Text**: "What data, APIs, or external services are needed? Where does data come from?"
 
-**Challenge**: Als onduidelijk:
-- "Welke API/tool hebt je in gedachten?"
-- "Hoe ziet de data flow eruit?"
+**Challenge**: If unclear:
+- "Which API/tool do you have in mind?"
+- "What does the data flow look like?"
 
-### Vraag 7: Risico's & Open Issues
-**Text**: "Wat weet je nog niet? Welke aannames maak je? Welke externe afhankelijkheden?"
+### Question 7: Risks & Open Issues
+**Text**: "What don't you know yet? What assumptions are you making? What external dependencies?"
 
-**Challenge**: Als te vaag:
-- "Welke specifieke open vragen hebben prioriteit?"
-- "Welke aannames zouden kritiek kunnen zijn?"
+**Challenge**: If too vague:
+- "Which specific open questions have priority?"
+- "Which assumptions could be critical?"
 
 ---
 
 ## Phase 2: Draft PRD
 
-Nadat alle 7 vragen zijn beantwoord:
+After all 7 questions are answered:
 
-1. **Bepaal het PRD-nummer** (NNNN): Tel bestaande bestanden in `docs/planning/prd/` om het volgende nummer te bepalen.
+1. **Determine the PRD number** (NNNN): Count existing files in `docs/planning/prd/` to determine the next number.
 
-2. **Vul het template** (`docs/planning/prd/_template.md`) in:
-   - Probleem: Samenvatting van vraag 1
-   - Doelen & Success Metrics: Uit vraag 2 (zorg voor SMART metrics)
-   - Doelgroep: Uit vraag 3 (tabla format: Persona | Doel | Pijnpunt)
-   - Features & Requirements: Uit vraag 4 (tabla format: Feature | Prioriteit | Beschrijving)
-   - User Stories: Maak 1-2 per Must/Should feature (Happy path + error scenario voor Must)
-   - Scope (In/Out): Uit vraag 5
-   - Open Issues: Uit vraag 7
-   - Beslissingen: Voeg toe als relevant
+2. **Fill the template** (`docs/planning/prd/_template.md`):
+   - Problem: Summary from question 1
+   - Goals & Success Metrics: From question 2 (ensure SMART metrics)
+   - Target Audience: From question 3 (table format: Persona | Goal | Pain Point)
+   - Features & Requirements: From question 4 (table format: Feature | Priority | Description)
+   - User Stories: Create 1-2 per Must/Should feature (Happy path + error scenario for Must)
+   - Scope (In/Out): From question 5
+   - Open Issues: From question 7
+   - Decisions: Add if relevant
 
-3. **Schrijf naar bestand**: `docs/planning/prd/NNNN-korte-naam.md`
+3. **Write to file**: `docs/planning/prd/NNNN-short-name.md`
    - Status: `draft`
-   - Eigenaar: `(nog te bepalen)`
-   - Date: Vandaag
+   - Owner: `(to be determined)`
+   - Date: Today
 
-4. **Toon de draft** aan gebruiker. Vraag: "Klopt dit? Wijzigingen voordat we reviewers activeren?"
+4. **Show the draft** to the user. Ask: "Does this look right? Any changes before we activate reviewers?"
 
 ---
 
-## Phase 3: Review Loop (Max 3 Iteraties)
+## Phase 3: Review Loop (Max 3 Iterations)
 
-Nadat gebruiker de draft goedkeurt (of geen wijzigingen wil):
+After the user approves the draft (or wants no changes):
 
 ### Spawn 3 Agents in Parallel
 
-Gebruik Task tool om 3 agents parallel te spawnen (elk subagent_type: "general-purpose"):
+Use Task tool to spawn 3 agents in parallel (each subagent_type: "general-purpose"):
 
 | Agent | Prompt | Model |
 |-------|--------|-------|
-| **PRD Product Reviewer** | Bestand: `.claude/agents/prd-product-reviewer.md` system prompt + PRD tekst | sonnet |
-| **PRD Technical Reviewer** | Bestand: `.claude/agents/prd-technical-reviewer.md` system prompt + PRD tekst | sonnet |
-| **PRD Risk Analyst** | Bestand: `.claude/agents/prd-risk-analyst.md` system prompt + PRD tekst | sonnet |
+| **PRD Product Reviewer** | File: `.claude/agents/prd-product-reviewer.md` system prompt + PRD text | sonnet |
+| **PRD Technical Reviewer** | File: `.claude/agents/prd-technical-reviewer.md` system prompt + PRD text | sonnet |
+| **PRD Risk Analyst** | File: `.claude/agents/prd-risk-analyst.md` system prompt + PRD text | sonnet |
 
 **Agent prompt template**:
 ```
-[System prompt uit agent YAML]
+[System prompt from agent YAML]
 
-## PRD ter Review
+## PRD for Review
 
-[PRD tekst]
+[PRD text]
 
-[Agent zal antwoorden in het gedefinieerde format met verdict]
+[Agent will respond in the defined format with verdict]
 ```
 
-### Verdictlogica
+### Verdict Logic
 
-Na alle 3 agents:
+After all 3 agents:
 
-| Scenario | Actie |
-|----------|-------|
-| Alle 3 = APPROVED | → Phase 4 (Finalize) |
-| 1+ = APPROVED WITH CHANGES | → Adresseer kritieke issues → Herhaal review loop (iteratie +1) |
-| 1+ = NEEDS REVISION | → Herschrijf PRD op basis van feedback → Herhaal review loop (iteratie +1) |
-| Na 3 iteraties geen full APPROVED | → Vraag gebruiker: "Wat willen we doen? Doorgaan, sealen op current state, of herbeginnen?" |
+| Scenario | Action |
+|----------|--------|
+| All 3 = APPROVED | → Phase 4 (Finalize) |
+| 1+ = APPROVED WITH CHANGES | → Address critical issues → Repeat review loop (iteration +1) |
+| 1+ = NEEDS REVISION | → Rewrite PRD based on feedback → Repeat review loop (iteration +1) |
+| After 3 iterations without full APPROVED | → Ask user: "What do we want to do? Continue, seal at current state, or start over?" |
 
-### Afhandeling per Iteratie
+### Handling per Iteration
 
-1. **Toon verdicts** aan gebruiker
-2. **Highlight kritieke issues** (MOET OPLOSSEN)
-3. **Vraag**: "Zullen we dit adresseren?" → Gebruiker geeft feedback
-4. **Update PRD** op basis van feedback
-5. **Loop terug** naar agent spawning (als niet approved)
+1. **Show verdicts** to the user
+2. **Highlight critical issues** (MUST FIX)
+3. **Ask**: "Shall we address this?" → User provides feedback
+4. **Update PRD** based on feedback
+5. **Loop back** to agent spawning (if not approved)
 
 ---
 
 ## Phase 4: Finalize
 
-Nadat alle 3 agents APPROVED geven:
+After all 3 agents give APPROVED:
 
-1. **Update PRD bestand**:
+1. **Update PRD file**:
    - Status: `draft` → `approved`
-   - Eigenaar: Invoeren (gebruiker bepalen)
-   - Voeg toe: kort notatje van review iteraties
+   - Owner: Enter (user decides)
+   - Add: brief note of review iterations
 
-2. **Toon samenvatting**:
+2. **Show summary**:
    ```
-   ✅ PRD Approved!
+   PRD Approved!
 
-   - Titel: [PRD name]
-   - Bestand: docs/planning/prd/NNNN-naam.md
-   - Iteraties: [N]
-   - Key verbeteringen: [bullet points]
+   - Title: [PRD name]
+   - File: docs/planning/prd/NNNN-name.md
+   - Iterations: [N]
+   - Key improvements: [bullet points]
 
    Review verdicts:
-   - Product: ✅ APPROVED
-   - Technical: ✅ APPROVED
-   - Risk: ✅ APPROVED
+   - Product: APPROVED
+   - Technical: APPROVED
+   - Risk: APPROVED
    ```
 
-3. **Vraag next step**: "Wat willen we nu maken?
-   - Epic (roadmap) voor deze PRD?
-   - Design Doc (technisch ontwerp)?
-   - Implementatieplan (developers planning)?
-   - Niets, klaar voor nu?"
+3. **Ask next step**: "What do we want to do next?
+   - Epic (roadmap) for this PRD?
+   - Design Doc (technical design)?
+   - Implementation plan (developer planning)?
+   - Nothing, done for now?"
 
 ---
 
-## Implementatiedetails
+## Implementation Details
 
-### Interview-logica (Challenge Rule)
+### Interview Logic (Challenge Rule)
 
-Pseudo-code voor vraag-handler:
+Pseudo-code for question handler:
 
 ```
 while (isVague(answer)) {
@@ -185,9 +185,9 @@ while (isVague(answer)) {
 recordAnswer(question, answer)
 ```
 
-Vage antwoorden zijn: generiek ("beter", "sneller"), niet-specifiek ("tool", "feature"), onmeetbaar ("users gaan houden van").
+Vague answers are: generic ("better", "faster"), non-specific ("tool", "feature"), unmeasurable ("users will love it").
 
-### PRD-nummering
+### PRD Numbering
 
 ```python
 existing_prds = glob("docs/planning/prd/NNNN-*.md")
@@ -218,31 +218,30 @@ verdicts = [extract_verdict(r) for r in results]
 if all(v == "APPROVED" for v in verdicts):
   return "APPROVED"
 elif any(v == "NEEDS REVISION" for v in verdicts):
-  return "NEEDS_REVISION"  # → Herschrijf
+  return "NEEDS_REVISION"  # → Rewrite
 elif any(v == "APPROVED WITH CHANGES" for v in verdicts):
-  return "APPROVED_WITH_CHANGES"  # → Fix, dan recheck
+  return "APPROVED_WITH_CHANGES"  # → Fix, then recheck
 ```
 
 ---
 
-## Toetsstappen
+## Verification Steps
 
-Na implementatie:
+After implementation:
 
-1. In een project: `/prd` typen
-2. Interview starten → vraag 1 verschijnt
-3. 7 vragen doorlopen → antwoorden opslaan
-4. Draft PRD verschijnt → preview tonen → goedkeuring
-5. Review starten → 3 agents spawn parallel
-6. Verdicts verschijnen → iteratie logic
-7. APPROVED status checken → PRD bestand updateren
-8. Samenvatting tonen → next steps aanbieden
+1. In a project: type `/prd`
+2. Interview starts → question 1 appears
+3. Go through 7 questions → save answers
+4. Draft PRD appears → show preview → approval
+5. Review starts → 3 agents spawn in parallel
+6. Verdicts appear → iteration logic
+7. Check APPROVED status → update PRD file
+8. Show summary → offer next steps
 
 ---
 
 ## Notes
 
-- **Taal**: Alle interview-vragen, agent prompts, en output zijn Nederlands
-- **Non-blocking**: Gebruiker mag interview afbreken en later hervatten (opslaan van progress)
-- **Transparantie**: PRD-bestand is altijd zichtbaar; geen "achter de schermen" decisions
-- **Max 3 iteraties**: Na 3 review-loops zonder full approval, vraag gebruiker voor richting
+- **Non-blocking**: User may abort the interview and resume later (save progress)
+- **Transparency**: PRD file is always visible; no "behind the scenes" decisions
+- **Max 3 iterations**: After 3 review loops without full approval, ask the user for direction

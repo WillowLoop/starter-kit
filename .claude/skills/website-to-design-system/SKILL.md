@@ -1,173 +1,173 @@
 ---
 name: website-to-design-system
 description: >-
-  Genereer een compleet, gebruiksklaar design system vanuit een website-URL als
-  inspiratie. Analyseert de visuele designtaal en produceert een design system
-  document, OKLch CSS variabelen (Tailwind CSS 4 compatible), en font setup.
-  Gebruik bij: "maak design system van [URL]", "gebruik [URL] als design
-  inspiratie", of "/design-from-website [URL]".
-  NB: Voor Tailwind 3 projecten (tailwind.config.ts), gebruik design-system-bootstrap.
+  Generate a complete, ready-to-use design system from a website URL as
+  inspiration. Analyzes the visual design language and produces a design system
+  document, OKLch CSS variables (Tailwind CSS 4 compatible), and font setup.
+  Use for: "create design system from [URL]", "use [URL] as design
+  inspiration", or "/design-from-website [URL]".
+  Note: For Tailwind 3 projects (tailwind.config.ts), use design-system-bootstrap.
 ---
 
 # Website-to-Design-System
 
-Genereer een compleet design system vanuit een website-URL als inspiratie. Produceert:
-1. Een design system markdown document (project-lokale skill)
-2. OKLch CSS variabelen in `globals.css` (Tailwind CSS 4 + shadcn/ui compatible)
+Generate a complete design system from a website URL as inspiration. Produces:
+1. A design system markdown document (project-local skill)
+2. OKLch CSS variables in `globals.css` (Tailwind CSS 4 + shadcn/ui compatible)
 3. Google Font setup in `layout.tsx`
 
-## Wanneer Gebruiken
+## When to Use
 
-- "Maak een design system gebaseerd op [URL]"
-- "Gebruik [URL] als design inspiratie"
+- "Create a design system based on [URL]"
+- "Use [URL] as design inspiration"
 - `/design-from-website [URL]`
-- "Ik wil een design zoals [URL] maar met [aanpassingen]"
+- "I want a design like [URL] but with [adjustments]"
 
-## Wanneer NIET Gebruiken
+## When NOT to Use
 
-- **Tailwind 3 projecten** (met `tailwind.config.ts` en `extend.colors`) → gebruik `design-system-bootstrap`
-- **Alleen component structuur** → gebruik `ui-component-creator`
-- **Alleen creative direction** → gebruik `front-end-design`
+- **Tailwind 3 projects** (with `tailwind.config.ts` and `extend.colors`) → use `design-system-bootstrap`
+- **Only component structure** → use `ui-component-creator`
+- **Only creative direction** → use `front-end-design`
 
-## Gerelateerde Skills (refereer, dupliceer niet)
+## Related Skills (reference, don't duplicate)
 
-| Skill | Wat het levert | Hoe deze skill het gebruikt |
-|-------|---------------|---------------------------|
-| `design-system` | Token extractie, naming conventions | Fase 2: extractietechnieken |
-| `design-system/templates/design-system-template.md` | Document structuur (536 regels) | Fase 4: template voor output |
-| `design-system/examples/example-design-system.md` | Kwaliteitsreferentie: Tailwind classes, do's/don'ts | Fase 4: kwaliteitsnorm |
-| `front-end-design` | Creative direction: Purpose/Tone/Constraints | Fase 3: esthetische analyse |
-| `ui-component-creator` | Component patronen: forwardRef, cn(), CVA, a11y | Component sectie in document |
-| `mobile-friendly-design` | Responsive en touch target patronen | Responsive sectie in document |
+| Skill | What it delivers | How this skill uses it |
+|-------|-----------------|----------------------|
+| `design-system` | Token extraction, naming conventions | Phase 2: extraction techniques |
+| `design-system/templates/design-system-template.md` | Document structure (536 lines) | Phase 4: template for output |
+| `design-system/examples/example-design-system.md` | Quality reference: Tailwind classes, do's/don'ts | Phase 4: quality standard |
+| `front-end-design` | Creative direction: Purpose/Tone/Constraints | Phase 3: aesthetic analysis |
+| `ui-component-creator` | Component patterns: forwardRef, cn(), CVA, a11y | Component section in document |
+| `mobile-friendly-design` | Responsive and touch target patterns | Responsive section in document |
 
 ---
 
-## Fase 1: Input & Detectie
+## Phase 1: Input & Detection
 
 ### Input
 
-De gebruiker geeft:
-- **Verplicht**: Eén website-URL als inspiratie
-- **Optioneel**: Projectnaam, aesthetic keywords ("minimaal", "speels", "premium")
+The user provides:
+- **Required**: One website URL as inspiration
+- **Optional**: Project name, aesthetic keywords ("minimal", "playful", "premium")
 
-### Acties
+### Actions
 
-**1. Accepteer de URL** van de gebruiker.
+**1. Accept the URL** from the user.
 
-**2. Detecteer het target project:**
+**2. Detect the target project:**
 
 ```
-Zoek: components.json in werkdirectory of subdirectories
+Find: components.json in working directory or subdirectories
   ↓
-Lees: tailwind.css pad uit components.json
-  ↓ BELANGRIJK: relatief resolven t.o.v. locatie components.json
-  ↓ bijv. frontend/components.json met css: "src/app/globals.css"
+Read: tailwind.css path from components.json
+  ↓ IMPORTANT: resolve relative to components.json location
+  ↓ e.g. frontend/components.json with css: "src/app/globals.css"
   ↓      → frontend/src/app/globals.css
   ↓
-Lees: globals.css → bevestig Tailwind 4:
-  - @import "tailwindcss" aanwezig
-  - @theme inline blok aanwezig
+Read: globals.css → confirm Tailwind 4:
+  - @import "tailwindcss" present
+  - @theme inline block present
   ↓
-Check: bestaat er al een *-design-system.md skill?
-  → Ja: vraag gebruiker: vervangen of mergen?
+Check: does a *-design-system.md skill already exist?
+  → Yes: ask user: replace or merge?
   ↓
-Check: bestaat er een tailwind.config.ts met custom kleuren?
-  → Ja: waarschuw dat dit een Tailwind 3 pattern is
-  → Suggereer: gebruik design-system-bootstrap voor Tailwind 3
+Check: does a tailwind.config.ts with custom colors exist?
+  → Yes: warn that this is a Tailwind 3 pattern
+  → Suggest: use design-system-bootstrap for Tailwind 3
 ```
 
-**3. Stel projectnaam vast:**
-- Lees `name` uit `package.json` in de project root
-- Of vraag aan de gebruiker
+**3. Determine project name:**
+- Read `name` from `package.json` in the project root
+- Or ask the user
 
 ### Quick Mode (Fallback)
 
-Als WebFetch faalt of de gebruiker al weet wat hij wil ("maak een design zoals Stripe maar met groene accenten"):
-- Accepteer directe input: 3-5 key kleuren (hex) + font naam + aesthetic richting
-- Sla Fase 2 over → ga direct naar Fase 3
+If WebFetch fails or the user already knows what they want ("make a design like Stripe but with green accents"):
+- Accept direct input: 3-5 key colors (hex) + font name + aesthetic direction
+- Skip Phase 2 → go directly to Phase 3
 
 ### Output
 
-Config context: project pad, globals.css pad, layout.tsx pad, projectnaam, bestaande variabelen.
+Config context: project path, globals.css path, layout.tsx path, project name, existing variables.
 
 ---
 
-## Fase 2: Website Analyse
+## Phase 2: Website Analysis
 
-### Doel
+### Goal
 
-Visuele designtaal extraheren van de inspiratie-website.
+Extract visual design language from the inspiration website.
 
-### Acties
+### Actions
 
-**1. Fetch de website:**
+**1. Fetch the website:**
 
 ```
-WebFetch hoofd-URL → analyseer HTML voor:
-├── <link rel="stylesheet"> URLs → fetch elke stylesheet (max 5)
-├── Inline <style> blokken (SSR sites emiten critical CSS inline)
+WebFetch main URL → analyze HTML for:
+├── <link rel="stylesheet"> URLs → fetch each stylesheet (max 5)
+├── Inline <style> blocks (SSR sites emit critical CSS inline)
 ├── CSS custom properties (--var: value)
 ├── Google Fonts links (families + weights)
 └── <meta name="theme-color">
 ```
 
-**2. Extraheer tokens uit verzamelde CSS:**
+**2. Extract tokens from collected CSS:**
 
-| Token Type | Wat zoeken | Hoe groeperen |
-|-----------|-----------|--------------|
-| **Kleuren** | `color:`, `background:`, `border-color:`, CSS vars met kleurwaarden | primary / secondary / neutral / semantic |
-| **Typografie** | `font-family`, `font-size`, `font-weight`, `line-height` | Heading hiërarchie identificeren |
-| **Spacing** | `margin`, `padding`, `gap` waarden | Grid-basis bepalen (4px of 8px) |
-| **Border radius** | `border-radius` waarden | small / medium / large |
+| Token Type | What to look for | How to group |
+|-----------|-----------------|-------------|
+| **Colors** | `color:`, `background:`, `border-color:`, CSS vars with color values | primary / secondary / neutral / semantic |
+| **Typography** | `font-family`, `font-size`, `font-weight`, `line-height` | Identify heading hierarchy |
+| **Spacing** | `margin`, `padding`, `gap` values | Determine grid basis (4px or 8px) |
+| **Border radius** | `border-radius` values | small / medium / large |
 | **Shadows** | `box-shadow` | Elevation levels |
 
-**3. Identificeer component-patronen:**
-Buttons, cards, inputs, navigatie.
+**3. Identify component patterns:**
+Buttons, cards, inputs, navigation.
 
-### Fallback bij Beperkte CSS
+### Fallback for Limited CSS
 
-Veel sites gebruiken CSS-in-JS, bundled CSS, of zijn SPAs. Bij onvoldoende CSS:
+Many sites use CSS-in-JS, bundled CSS, or are SPAs. When CSS is insufficient:
 
-1. **Probeer common CSS paden:**
+1. **Try common CSS paths:**
    - `/styles.css`
    - `/_next/static/css/*.css` (Next.js)
    - `/assets/css/*.css`
 
-2. **Analyseer gerenderde markdown** voor visuele hints:
-   - Kleurwoorden, font-namen, layout beschrijving
+2. **Analyze rendered markdown** for visual hints:
+   - Color words, font names, layout description
 
-3. **Als onvoldoende — vraag de gebruiker expliciet om:**
-   - 3-5 key kleuren (hex): primary, secondary/accent, text, background
-   - Font naam (display + body)
-   - Gewenste sfeer (minimaal, speels, premium, etc.)
+3. **If insufficient — explicitly ask the user for:**
+   - 3-5 key colors (hex): primary, secondary/accent, text, background
+   - Font name (display + body)
+   - Desired mood (minimal, playful, premium, etc.)
 
-4. **Combineer** wat er wél geëxtraheerd kon worden met de user input.
+4. **Combine** what could be extracted with the user input.
 
 ### Output
 
-Geëxtraheerde tokens (ruw): kleuren, fonts, spacing, radii, shadows.
+Extracted tokens (raw): colors, fonts, spacing, radii, shadows.
 
 ---
 
-## Fase 3: Creative Direction & Token Verfijning
+## Phase 3: Creative Direction & Token Refinement
 
-### Doel
+### Goal
 
-Ruwe data transformeren naar een intentioneel design system.
+Transform raw data into an intentional design system.
 
-### 3.1 Esthetische Analyse
+### 3.1 Aesthetic Analysis
 
-Analyseer via het `front-end-design` denkkader:
-- **Purpose**: Wat communiceert dit design? (betrouwbaar, speels, premium, minimaal)
-- **Tone**: Welk esthetisch archetype?
-- **Differentiation**: Wat maakt dit design onderscheidend?
+Analyze via the `front-end-design` thinking framework:
+- **Purpose**: What does this design communicate? (trustworthy, playful, premium, minimal)
+- **Tone**: What aesthetic archetype?
+- **Differentiation**: What makes this design distinctive?
 
-### 3.2 Token Verfijning
+### 3.2 Token Refinement
 
-1. **Dedupliceer** vergelijkbare kleuren
-2. **Wijs semantische namen toe** die matchen met ALLE shadcn/ui variabelen.
+1. **Deduplicate** similar colors
+2. **Assign semantic names** matching ALL shadcn/ui variables.
 
-Volledige variabelenlijst (zie `references/shadcn-variables.md` voor details):
+Full variable list (see `references/shadcn-variables.md` for details):
 
 ```
 Core:       background, foreground, primary, primary-foreground,
@@ -175,216 +175,216 @@ Core:       background, foreground, primary, primary-foreground,
             accent, accent-foreground, destructive
 Surface:    card, card-foreground, popover, popover-foreground
 UI:         border, input, ring
-Charts:     chart-1 t/m chart-5
+Charts:     chart-1 through chart-5
 Sidebar:    sidebar, sidebar-foreground, sidebar-primary,
             sidebar-primary-foreground, sidebar-accent,
             sidebar-accent-foreground, sidebar-border, sidebar-ring
-Radius:     --radius (base waarde)
+Radius:     --radius (base value)
 ```
 
-3. **Normaliseer typografie** naar standard Tailwind scale
-4. **Definieer base `--radius` waarde** (alle andere radii worden berekend via `calc()`)
+3. **Normalize typography** to standard Tailwind scale
+4. **Define base `--radius` value** (all other radii are calculated via `calc()`)
 
-### 3.3 OKLch Conversie
+### 3.3 OKLch Conversion
 
-Converteer alle kleuren naar `oklch(L C h)` formaat. Gebruik `references/oklch-guide.md` als referentie.
+Convert all colors to `oklch(L C h)` format. Use `references/oklch-guide.md` as reference.
 
-**Verplicht**: hex commentaar naast elke OKLch waarde:
+**Required**: hex comment next to each OKLch value:
 ```css
 --primary: oklch(0.556 0.249 277.023); /* #635bff */
 ```
 
-Genereer `:root` (light) en `.dark` varianten.
+Generate `:root` (light) and `.dark` variants.
 
-### 3.4 Dark Mode Generatie
+### 3.4 Dark Mode Generation
 
-Gebruik de bewezen structuur uit de bestaande `globals.css` als referentie, NIET een naïeve inversie:
+Use the proven structure from the existing `globals.css` as reference, NOT a naive inversion:
 
-| Variabele | Light → Dark transformatie |
-|-----------|--------------------------|
-| `--background` | Donkere achtergrond (L ~0.145) |
-| `--foreground` | Lichte tekst (L ~0.985) |
-| `--primary` | **Lichtere** versie (L verhogen) |
-| `--primary-foreground` | **Donkere** versie (L verlagen) |
-| `--card` / `--popover` | Verhoogd oppervlak (L ~0.205, lichter dan background) |
+| Variable | Light → Dark transformation |
+|----------|---------------------------|
+| `--background` | Dark background (L ~0.145) |
+| `--foreground` | Light text (L ~0.985) |
+| `--primary` | **Lighter** version (increase L) |
+| `--primary-foreground` | **Darker** version (decrease L) |
+| `--card` / `--popover` | Elevated surface (L ~0.205, lighter than background) |
 | `--secondary` / `--muted` / `--accent` | L ~0.269 |
-| `--destructive` | L verhogen, C licht verlagen voor leesbaarheid |
+| `--destructive` | Increase L, slightly decrease C for readability |
 | `--border` | **Alpha transparency**: `oklch(1 0 0 / 10%)` |
-| `--input` | Iets hogere alpha: `oklch(1 0 0 / 15%)` |
-| `--chart-*` | Hogere chroma, aangepaste hues voor donkere achtergrond |
+| `--input` | Slightly higher alpha: `oklch(1 0 0 / 15%)` |
+| `--chart-*` | Higher chroma, adjusted hues for dark background |
 
 ### 3.5 Design Principles
 
-Formuleer 3-4 design principles gebaseerd op de analyse.
+Formulate 3-4 design principles based on the analysis.
 
 ### Output
 
-Verfijnd design system spec: alle tokens, dark mode, principles.
+Refined design system spec: all tokens, dark mode, principles.
 
 ---
 
-## Fase 4: Design System Document + Review Checkpoint
+## Phase 4: Design System Document + Review Checkpoint
 
-### Doel
+### Goal
 
-Genereer het autoritatieve design system markdown document.
+Generate the authoritative design system markdown document.
 
-### Acties
+### Actions
 
-**1. Gebruik template en kwaliteitsreferentie:**
+**1. Use template and quality reference:**
 - Template: `design-system/templates/design-system-template.md`
-- Kwaliteit: `design-system/examples/example-design-system.md`
+- Quality: `design-system/examples/example-design-system.md`
 
-**2. Vul alle secties in:**
+**2. Fill all sections:**
 
-| Sectie | Inhoud |
-|--------|--------|
+| Section | Content |
+|---------|---------|
 | Overview | Design principles, aesthetic direction |
-| Colors | OKLch waarden + hex equivalenten, semantische namen |
+| Colors | OKLch values + hex equivalents, semantic names |
 | Typography | Families, scale, weights, heading styles |
-| Spacing | System (4px of 8px grid) |
-| Border radius & Shadows | Radii met calc()-relatie, elevation levels |
-| Component patterns | Button, card, input, modal — als **Tailwind class combinaties** |
-| Animaties & transitions | Timing, easing, motion patterns |
+| Spacing | System (4px or 8px grid) |
+| Border radius & Shadows | Radii with calc() relationship, elevation levels |
+| Component patterns | Button, card, input, modal — as **Tailwind class combinations** |
+| Animations & transitions | Timing, easing, motion patterns |
 | Accessibility | Focus states, touch targets 44px min, ARIA |
 | Responsive | Mobile-first patterns, breakpoints |
-| Do's and Don'ts | Concrete voorbeelden |
-| Quick reference | Import snippets, veelgebruikte combinaties |
+| Do's and Don'ts | Concrete examples |
+| Quick reference | Import snippets, commonly used combinations |
 
-**3. Tailwind 4 specifiek:**
-Alle implementation notes gebruiken CSS variables + `@theme inline` pattern, NIET `tailwind.config.ts`.
+**3. Tailwind 4 specific:**
+All implementation notes use CSS variables + `@theme inline` pattern, NOT `tailwind.config.ts`.
 
 **4. Quality Checklist:**
 
-- [ ] Alle kleuren hebben semantische namen
-- [ ] Contrast check: primary tekst op backgrounds WCAG AA (4.5:1)
-- [ ] Typografie hiërarchie compleet (h1 t/m h6 + body)
-- [ ] Spacing consistent op 4px grid
-- [ ] Minimum: button, card, input patterns gedefinieerd
-- [ ] Dark mode gedefinieerd voor alle variabelen
-- [ ] Breakpoints gedefinieerd met use cases
-- [ ] Alle 31 shadcn/ui variabelen aanwezig in zowel `:root` als `.dark`
+- [ ] All colors have semantic names
+- [ ] Contrast check: primary text on backgrounds WCAG AA (4.5:1)
+- [ ] Typography hierarchy complete (h1 through h6 + body)
+- [ ] Spacing consistent on 4px grid
+- [ ] Minimum: button, card, input patterns defined
+- [ ] Dark mode defined for all variables
+- [ ] Breakpoints defined with use cases
+- [ ] All 31 shadcn/ui variables present in both `:root` and `.dark`
 
 ### REVIEW CHECKPOINT
 
-**Presenteer samenvatting aan de gebruiker:**
+**Present summary to the user:**
 
 ```
-🎨 Design System Preview
+Design System Preview
 ━━━━━━━━━━━━━━━━━━━━━━━━
 
-Kleuren:
-  Primary:   [hex] ████ — [beschrijving]
-  Secondary: [hex] ████ — [beschrijving]
-  Accent:    [hex] ████ — [beschrijving]
+Colors:
+  Primary:   [hex] ████ — [description]
+  Secondary: [hex] ████ — [description]
+  Accent:    [hex] ████ — [description]
 
 Font:
-  Display: [font naam]
-  Body:    [font naam]
+  Display: [font name]
+  Body:    [font name]
 
 Design Principles:
   1. [Principle]
   2. [Principle]
   3. [Principle]
 
-Voorbeeld Button:
+Example Button:
   [Tailwind classes]
 
-Voorbeeld Card:
+Example Card:
   [Tailwind classes]
 ```
 
-**Vraag**: "Wil je iets aanpassen? (warmere kleuren, ander font, meer/minder contrast, etc.)"
+**Ask**: "Would you like to adjust anything? (warmer colors, different font, more/less contrast, etc.)"
 
-**Bij feedback:**
-- Terug naar Fase 3 met aanpassing, hergeneer Fase 4
-- Communiceer iteratietelling: "Dit is refinement 2/3"
-- **Max 3 refinement iteraties** — bij 4e verzoek: vraag gebruiker om specifieker te zijn
+**On feedback:**
+- Return to Phase 3 with adjustment, regenerate Phase 4
+- Communicate iteration count: "This is refinement 2/3"
+- **Max 3 refinement iterations** — on 4th request: ask user to be more specific
 
-**Bij "goed zo"** → door naar Fase 5.
+**On "looks good"** → proceed to Phase 5.
 
 ### Output
 
-Design system document → opslaan als:
+Design system document → save as:
 `{project}/.claude/skills/{projectName}-design-system.md`
 
-Dit is project-lokaal (niet globaal) zodat het design system bij het project blijft.
+This is project-local (not global) so the design system stays with the project.
 
 ---
 
-## Fase 5: Code Implementatie + Verificatie
+## Phase 5: Code Implementation + Verification
 
 ### 5a. Update `globals.css`
 
-**Vervang ALLEEN de `:root` en `.dark` CSS variable blokken.**
+**Replace ONLY the `:root` and `.dark` CSS variable blocks.**
 
-**NIET WIJZIGEN:**
+**DO NOT modify:**
 - `@import "tailwindcss"`
 - `@import "tw-animate-css"`
 - `@import "shadcn/tailwind.css"`
 - `@custom-variant dark (...)`
-- `@theme inline { ... }` structuur — de mappings (`--color-primary: var(--primary)` etc.) blijven ONGEWIJZIGD
+- `@theme inline { ... }` structure — the mappings (`--color-primary: var(--primary)` etc.) remain UNCHANGED
 - `@layer base { ... }`
-- Eventuele user-added custom variabelen
+- Any user-added custom variables
 
-**WEL wijzigen als fonts veranderen:**
-- `--font-sans` in `@theme inline` → `var(--font-{nieuwenaam})`
+**DO modify if fonts change:**
+- `--font-sans` in `@theme inline` → `var(--font-{newname})`
 
-### 5b. Update `layout.tsx` (als font wijzigt)
+### 5b. Update `layout.tsx` (if font changes)
 
-**Eerst verifiëren** dat het font beschikbaar is via `next/font/google`.
+**First verify** that the font is available via `next/font/google`.
 
-Als het font proprietary is (San Francisco, Söhne, Circular, Graphik, etc.):
-1. Meld dit aan de gebruiker
-2. Stel het dichtstbijzijnde Google Fonts alternatief voor
-3. Pas pas aan na akkoord
+If the font is proprietary (San Francisco, Söhne, Circular, Graphik, etc.):
+1. Inform the user
+2. Suggest the closest Google Fonts alternative
+3. Only apply after approval
 
-Bij beschikbaar font:
-- Vervang de Google Font import
-- Update de `variable` naam: `--font-{naam}` moet matchen met `globals.css`
+For available fonts:
+- Replace the Google Font import
+- Update the `variable` name: `--font-{name}` must match `globals.css`
 
-### 5c. Verificatie
+### 5c. Verification
 
-**1. Lees gegenereerde/gewijzigde bestanden terug:**
-- Geen placeholders achtergebleven
-- Alle 31 shadcn/ui variabelen aanwezig in `:root` EN `.dark`
-- `@theme inline` block structureel intact
-- OKLch waarden geldig: L: 0-1, C: 0-0.5, h: 0-360
+**1. Read generated/modified files back:**
+- No placeholders left behind
+- All 31 shadcn/ui variables present in `:root` AND `.dark`
+- `@theme inline` block structurally intact
+- OKLch values valid: L: 0-1, C: 0-0.5, h: 0-360
 
-**2. Component compatibiliteit:**
-Bestaande shadcn/ui componenten (button, card, input) gebruiken semantische classes (`bg-primary`, `text-foreground`) → erven automatisch het nieuwe design system.
+**2. Component compatibility:**
+Existing shadcn/ui components (button, card, input) use semantic classes (`bg-primary`, `text-foreground`) → automatically inherit the new design system.
 
-**3. Presenteer samenvatting:**
+**3. Present summary:**
 
 ```
-✅ Design System Geïmplementeerd
+Design System Implemented
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Gewijzigde bestanden:
-  - [pad]/globals.css (CSS variabelen)
-  - [pad]/layout.tsx (font import)
+Modified files:
+  - [path]/globals.css (CSS variables)
+  - [path]/layout.tsx (font import)
 
-Nieuwe bestanden:
+New files:
   - .claude/skills/[project]-design-system.md
 
 Highlights:
-  - Primary: [kleur beschrijving]
-  - Font: [font naam]
-  - [X] variabelen gedefinieerd
+  - Primary: [color description]
+  - Font: [font name]
+  - [X] variables defined
 
-Volgende stap:
-  pnpm dev → open localhost:3000 → verifieer visueel:
-  1. Primary button kleur correct
-  2. Card achtergrond en tekst kleur
-  3. Dark mode (als .dark class toggle aanwezig)
+Next step:
+  pnpm dev → open localhost:3000 → verify visually:
+  1. Primary button color correct
+  2. Card background and text color
+  3. Dark mode (if .dark class toggle present)
   4. Font rendering
 ```
 
 ---
 
-## globals.css Structuur Referentie
+## globals.css Structure Reference
 
-De `globals.css` heeft deze exacte structuur die behouden moet blijven:
+The `globals.css` has this exact structure that must be preserved:
 
 ```css
 @import "tailwindcss";
@@ -396,10 +396,10 @@ De `globals.css` heeft deze exacte structuur die behouden moet blijven:
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);        /* ← DEZE MAG WIJZIGEN */
+  --font-sans: var(--font-geist-sans);        /* ← THIS MAY CHANGE */
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
-  /* ... alle andere --color-* mappings ... */
+  /* ... all other --color-* mappings ... */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -412,12 +412,12 @@ De `globals.css` heeft deze exacte structuur die behouden moet blijven:
 :root {
   --radius: 0.625rem;
   --background: oklch(...);
-  /* ... DEZE WAARDEN VERVANGEN ... */
+  /* ... REPLACE THESE VALUES ... */
 }
 
 .dark {
   --background: oklch(...);
-  /* ... DEZE WAARDEN VERVANGEN ... */
+  /* ... REPLACE THESE VALUES ... */
 }
 
 @layer base {
@@ -432,25 +432,25 @@ De `globals.css` heeft deze exacte structuur die behouden moet blijven:
 
 ---
 
-## Voorbeeld Aanroepen
+## Example Invocations
 
 ```
-"Maak een design system gebaseerd op https://linear.app"
+"Create a design system based on https://linear.app"
 
-"Gebruik https://stripe.com als inspiratie voor ons fintech project"
+"Use https://stripe.com as inspiration for our fintech project"
 
 "/design-from-website https://vercel.com"
 
-"Maak een design zoals Notion maar met warmere kleuren en een serif font"
+"Make a design like Notion but with warmer colors and a serif font"
 
-"Design system van https://cal.com — ik wil dezelfde clean look maar in blauw"
+"Design system from https://cal.com — I want the same clean look but in blue"
 ```
 
 ---
 
-## Volledige Variabelen Checklist
+## Full Variables Checklist
 
-Bij het genereren van `:root` en `.dark`, verifieer dat ALLE variabelen aanwezig zijn:
+When generating `:root` and `.dark`, verify that ALL variables are present:
 
 ```css
 :root {
@@ -499,4 +499,4 @@ Bij het genereren van `:root` en `.dark`, verifieer dat ALLE variabelen aanwezig
 }
 ```
 
-Totaal: **31 variabelen** per mode + `--radius`. Herhaal hetzelfde blok voor `.dark`.
+Total: **31 variables** per mode + `--radius`. Repeat the same block for `.dark`.
