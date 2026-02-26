@@ -16,6 +16,7 @@ repos:
     hooks:
       - id: ruff
         args: ['--config', 'backend/pyproject.toml']
+        verbose: true
       - id: ruff-format
         args: ['--config', 'backend/pyproject.toml']
 
@@ -40,3 +41,10 @@ repos:
         language: system
         files: ^frontend/src/.*\.(ts|tsx)$
         types: [file]
+
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: [feat, fix, docs, style, refactor, test, ci, chore, build, perf, revert]
