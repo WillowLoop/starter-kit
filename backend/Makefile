@@ -1,3 +1,5 @@
+PORT ?= 8000
+
 .PHONY: setup dev start test lint format typecheck migrate revision
 
 setup:  ## Create .env with generated credentials
@@ -11,13 +13,13 @@ setup:  ## Create .env with generated credentials
 	fi
 
 dev:
-	uv run uvicorn app.main:app --reload --host localhost --port 8000
+	uv run uvicorn app.main:app --reload --host localhost --port $(PORT)
 
 start:
-	uv run uvicorn app.main:app --host localhost --port 8000
+	uv run uvicorn app.main:app --host localhost --port $(PORT)
 
 test:
-	uv run pytest
+	uv run pytest --cov --cov-report=term-missing
 
 lint:
 	uv run ruff check .

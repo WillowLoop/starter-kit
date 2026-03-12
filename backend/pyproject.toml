@@ -11,10 +11,13 @@ dependencies = [
     "alembic>=1.18.0",
     "pydantic>=2.12.0",
     "pydantic-settings>=2.7.0",
-    "redis>=7.0.0",
+    "slowapi>=0.1.9",
     "structlog>=25.0.0",
     "sentry-sdk[fastapi]>=2.0.0",
 ]
+
+[project.optional-dependencies]
+redis = ["redis>=7.0.0"]
 
 [dependency-groups]
 dev = [
@@ -72,6 +75,14 @@ exclude = ["migrations/"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["app", "features", "shared"]
+omit = ["*/migrations/*", "*/tests/*"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
 
 [tool.bandit]
 targets = ["app", "features", "shared"]
