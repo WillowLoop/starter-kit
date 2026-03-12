@@ -38,9 +38,9 @@ class HealthService:
             return "skipped"
 
         try:
-            import redis.asyncio as aioredis
+            import redis.asyncio as aioredis  # type: ignore[import-not-found]
 
-            client = aioredis.from_url(settings.redis_url)  # type: ignore[no-untyped-call]
+            client = aioredis.from_url(settings.redis_url)
             await client.ping()
             await client.aclose()
             return "up"
