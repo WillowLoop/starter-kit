@@ -9,7 +9,7 @@
 | Frontend | Next.js 16, TypeScript, Tailwind CSS, shadcn/ui | Web UI | 3000 | Vercel (preview per PR, prod per main) |
 | Backend API | FastAPI, Python 3.12+, SQLAlchemy 2.0 | Business logic + API | 8000 | Coolify (Docker, self-hosted VPS) |
 | Database | PostgreSQL 16 | Data persistence | 5432 | Self-hosted via Coolify — internal only |
-| Cache | Redis 7 | Sessions, caching | 6379 | Self-hosted via Coolify — internal only |
+| Cache (opt-in) | Redis 7 | Sessions, caching | 6379 | Self-hosted via Coolify — internal only |
 
 ## Container Diagram
 
@@ -52,7 +52,7 @@
 - **Type:** PostgreSQL 16
 - **Driver:** asyncpg
 - **Migrations:** Alembic (async)
-- **Backup:** [strategy]
+- **Backup:** pg_dump — see `docs/workflows/database-backup.md`
 
 ## Communication
 
