@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:3000"]
     secret_key: str = Field(min_length=1)
     log_level: str = "INFO"
+    sentry_dsn: str | None = None
+    sentry_traces_sample_rate: float = Field(default=0.0, ge=0.0, le=1.0)
+    sentry_environment: str | None = None
 
     @field_validator("cors_origins", mode="before")
     @classmethod

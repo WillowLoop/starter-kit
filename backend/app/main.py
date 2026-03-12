@@ -21,7 +21,22 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     await logger.ainfo("shutdown")
 
 
+def _init_sentry() -> None:
+    if not settings.sentry_dsn:
+        return
+    import sentry_sdk
+
+    sentry_sdk.init(
+        dsn=settings.sentry_dsn,
+        environment=settings.sentry_environment or settings.app_env,
+        traces_sample_rate=settings.sentry_traces_sample_rate,
+        send_default_pii=False,
+    )
+
+
 def create_app() -> FastAPI:
+    _init_sentry()
+
     app = FastAPI(
         title="AIpoweredMakers API",
         version="0.1.0",
