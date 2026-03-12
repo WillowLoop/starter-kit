@@ -11,7 +11,12 @@ def main():
     env_keys = set()
     for line in Path("backend/.env.example").read_text().splitlines():
         line = line.strip()
-        if line and not line.startswith("#") and "=" in line:
+        if not line or line.startswith("##"):
+            continue
+        # Support both active (KEY=val) and commented-out (# KEY=val) entries
+        if line.startswith("# ") and "=" in line:
+            env_keys.add(line[2:].split("=", 1)[0].strip())
+        elif not line.startswith("#") and "=" in line:
             env_keys.add(line.split("=", 1)[0])
 
     config = Path("backend/shared/config.py").read_text()

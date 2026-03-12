@@ -46,6 +46,15 @@ def create_app() -> FastAPI:
     )
 
     add_cors_middleware(app)
+
+    if not settings.is_testing:
+        from slowapi.errors import RateLimitExceeded
+
+        from shared.middleware.rate_limit import limiter, rate_limit_exceeded_handler
+
+        app.state.limiter = limiter
+        app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
+
     app.add_middleware(RequestLoggingMiddleware)
 
     register_exception_handlers(app)
