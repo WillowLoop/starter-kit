@@ -10,8 +10,10 @@ export default withSentryConfig(nextConfig, {
   sourcemaps: {
     disable: true,
   },
-  // Automatically tree-shake Sentry logger statements to reduce bundle size
-  disableLogger: true,
+  // Automatically tree-shake Sentry debug logging to reduce bundle size
+  bundleSizeOptimizations: {
+    excludeDebugStatements: true,
+  },
   // Suppress Sentry CLI warnings when no auth token is set
   silent: true,
 });
