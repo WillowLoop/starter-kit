@@ -22,6 +22,7 @@
 | [Auth provider] | Authentication | OAuth2/OIDC | Outbound |
 | [Payment provider] | Payments | REST API | Outbound |
 | [Email service] | Notifications | SMTP/API | Outbound |
+| Sentry | Error tracking & monitoring (optional) | HTTPS | Outbound |
 
 ## Context Diagram
 

@@ -61,6 +61,8 @@
 | Frontend | Backend API | REST/GraphQL | JWT Bearer |
 | Backend API | Database | TCP | Connection string |
 | Backend API | Cache | TCP | Password |
+| Frontend | Sentry | HTTPS | DSN (optional) |
+| Backend API | Sentry | HTTPS | DSN (optional) |
 
 ## Deployment Pipeline
 
@@ -98,3 +100,4 @@ main branch
 - ADR-0002: Backend tech stack choice
 - ADR-0005: CI/CD pipeline architecture
 - ADR-0006: Deployment strategy (Vercel + Coolify)
+- ADR-0007: Error tracking with Sentry
