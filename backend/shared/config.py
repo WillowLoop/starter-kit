@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     database_url: str
     redis_url: str | None = None
     cors_origins: list[str] = _LOCAL_ORIGINS
-    secret_key: str = Field(min_length=1)
+    secret_key: str = Field(min_length=32)
     log_level: str = "INFO"
     sentry_dsn: str | None = None
     sentry_traces_sample_rate: float = Field(default=0.0, ge=0.0, le=1.0)
