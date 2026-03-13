@@ -17,9 +17,26 @@ updates:
       day: monday
       time: "07:30"
     groups:
-      frontend-deps: { patterns: ["*"] }
+      frontend-minor-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     labels: ["dependencies", "frontend"]
     open-pull-requests-limit: 10
+
+  # Frontend majors — separate PRs, manual review
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: monthly
+    groups:
+      frontend-major:
+        patterns: ["*"]
+        update-types: ["major"]
+    labels: ["dependencies", "frontend", "breaking"]
+    open-pull-requests-limit: 5
 
   - package-ecosystem: pip
     directory: /backend
@@ -28,6 +45,23 @@ updates:
       day: monday
       time: "08:00"
     groups:
-      python-deps: { patterns: ["*"] }
+      python-minor-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     labels: ["dependencies", "backend"]
     open-pull-requests-limit: 10
+
+  # Backend majors — separate PRs, manual review
+  - package-ecosystem: pip
+    directory: /backend
+    schedule:
+      interval: monthly
+    groups:
+      python-major:
+        patterns: ["*"]
+        update-types: ["major"]
+    labels: ["dependencies", "backend", "breaking"]
+    open-pull-requests-limit: 5
