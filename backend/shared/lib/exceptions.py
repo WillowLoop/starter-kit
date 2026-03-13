@@ -1,5 +1,8 @@
+import structlog
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+
+logger = structlog.get_logger()
 
 
 class AppException(Exception):
@@ -26,5 +29,20 @@ async def app_exception_handler(_request: Request, exc: AppException) -> JSONRes
     )
 
 
+async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    await logger.aerror(
+        "unhandled_exception",
+        path=request.url.path,
+        method=request.method,
+        exc_type=type(exc).__name__,
+        exc_msg=str(exc),
+    )
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error"},
+    )
+
+
 def register_exception_handlers(app: FastAPI) -> None:
     app.add_exception_handler(AppException, app_exception_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(Exception, unhandled_exception_handler)  # type: ignore[arg-type]
