@@ -40,6 +40,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="AIpoweredMakers API",
         version="0.1.0",
+        openapi_url="/openapi.json" if settings.is_development else None,
         docs_url="/docs" if settings.is_development else None,
         redoc_url="/redoc" if settings.is_development else None,
         lifespan=lifespan,
