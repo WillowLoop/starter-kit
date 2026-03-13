@@ -17,6 +17,7 @@
 | `SENTRY_DSN` | No | — | Project DSN from Sentry | App works without it |
 | `SENTRY_TRACES_SAMPLE_RATE` | No | `0.0` | `0.1`–`0.2` | `1.0` for local debugging. Keep low in prod to manage costs |
 | `SENTRY_ENVIRONMENT` | No | — | `staging` / `production` | Falls back to `APP_ENV` if unset |
+| `POSTGRES_PORT` | No | `5432` | — | Docker Compose host port. Change per project to avoid conflicts |
 
 ## Frontend (`frontend/.env.local`)
 
@@ -26,6 +27,25 @@
 | `NEXT_PUBLIC_SENTRY_DSN` | No | — | Project DSN from Sentry | App works without it |
 | `NEXT_PUBLIC_SENTRY_ENVIRONMENT` | No | — | `staging` / `production` | |
 | `NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE` | No | `0` | `0.1`–`0.2` | `1` for local debugging |
+
+## Running Multiple Projects Simultaneously
+
+Each project from this starter kit needs a unique database name and port to avoid conflicts. `make setup` auto-generates the DB name from the project directory, but you can also set them manually in `backend/.env`:
+
+1. `POSTGRES_DB` — unique database name per project (auto-set by `make setup`)
+2. `POSTGRES_PORT` — host port for PostgreSQL (e.g., `5433`, `5434`)
+3. `DATABASE_URL` — must match both `POSTGRES_DB` and `POSTGRES_PORT`
+4. Backend app port — use `PORT=8001 make dev`
+5. Frontend port — use `pnpm dev --port 3001` (or any free port in the 3000–3015 CORS range)
+
+Example for a second project:
+```
+POSTGRES_DB=my_second_project
+POSTGRES_PORT=5433
+DATABASE_URL=postgresql+asyncpg://postgres:secret@localhost:5433/my_second_project
+```
+
+> **Docker volumes:** Docker Compose names volumes with a directory prefix (e.g., `my_project_postgres_data`), so each project automatically gets its own volume. No extra configuration needed.
 
 ## CORS Configuration
 

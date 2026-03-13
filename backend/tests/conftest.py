@@ -17,6 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 os.environ.setdefault("APP_ENV", "testing")
 os.environ.setdefault("SECRET_KEY", "test-secret-key-do-not-use-in-production")
 os.environ.setdefault("DATABASE_URL", "sqlite+aiosqlite://")
+os.environ.setdefault("REDIS_URL", "")
 # === End environment setup — imports below this line ===
 
 from shared.db.base import Base
