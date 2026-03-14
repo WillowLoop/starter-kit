@@ -1,0 +1,45 @@
+# Shared infrastructure — synced to downstream projects
+# Format: [overwrite|merge] path
+# overwrite = volledig vervangen vanuit starter-kit (project mag niet aanpassen)
+# merge     = 3-way merge (project-specifieke wijzigingen worden behouden)
+
+# === Claude infrastructure (overwrite — projecten voegen eigen bestanden toe, wijzigen bestaande niet) ===
+overwrite .claude/agents/
+overwrite .claude/commands/
+merge .claude/skills/
+overwrite .claude/hooks/
+
+# === Claude settings (merge — project kan eigen hooks toevoegen) ===
+merge .claude/settings.json
+
+# === CI/CD (merge — project kan workflows aanpassen voor eigen deployment) ===
+merge .github/workflows/
+merge .github/dependabot.yml
+
+# === Code quality (overwrite — standaard voor alle projecten) ===
+merge .pre-commit-config.yaml
+
+# === Scripts (overwrite — utility scripts) ===
+overwrite scripts/scaffold-feature.sh
+overwrite scripts/start-dev.sh
+overwrite scripts/sync-upstream.sh
+overwrite scripts/hooks/
+
+# === Docs (overwrite — process docs en templates) ===
+overwrite docs/workflows/
+overwrite docs/project-documentation-guide.md
+overwrite docs/architecture/adr/_template.md
+
+# === Build targets (merge — projecten voegen eigen targets toe) ===
+merge Makefile
+merge backend/Makefile
+merge frontend/Makefile
+
+# === Versioning & ignores (overwrite — standaard) ===
+overwrite release-please-config.json
+overwrite .release-please-manifest.json
+merge .gitignore
+overwrite .gitleaksignore
+overwrite .trivyignore
+overwrite .node-version
+overwrite .starter-kit-files
