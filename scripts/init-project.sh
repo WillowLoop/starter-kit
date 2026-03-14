@@ -49,6 +49,7 @@ read -rp "Display name [$DEFAULT_DISPLAY]: " DISPLAY_NAME
 DISPLAY_NAME="${DISPLAY_NAME:-$DEFAULT_DISPLAY}"
 
 read -rp "GitHub remote URL (leave empty to skip): " REMOTE_URL
+read -rp "Starter-kit repo URL for future syncing (leave empty to skip): " STARTER_KIT_URL
 
 # ── 1d. Preview & confirm ────────────────────
 
@@ -60,6 +61,11 @@ if [[ -n "$REMOTE_URL" ]]; then
   echo "Remote:        $REMOTE_URL"
 else
   echo "Remote:        (none)"
+fi
+if [[ -n "$STARTER_KIT_URL" ]]; then
+  echo "Starter-kit:   $STARTER_KIT_URL"
+else
+  echo "Starter-kit:   (none — can set up later with 'make sync-upstream-init')"
 fi
 echo ""
 echo "This script will:"
@@ -184,7 +190,20 @@ if [[ -f docs/README.md ]]; then
   ' docs/README.md > docs/README.md.tmp && mv docs/README.md.tmp docs/README.md
 fi
 
-# Self-destruct
+# Generate .starter-kit.yml if starter-kit URL was provided
+if [[ -n "$STARTER_KIT_URL" ]]; then
+  CURRENT_SHA=$(git rev-parse HEAD)
+  TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  cat > .starter-kit.yml << KITEOF
+# Starter-kit sync tracking — do not edit manually
+source_repo: ${STARTER_KIT_URL}
+last_synced_commit: ${CURRENT_SHA}
+last_synced_at: "${TIMESTAMP}"
+KITEOF
+  echo "Created .starter-kit.yml"
+fi
+
+# Self-destruct (keep sync-upstream.sh for future syncing)
 rm -f scripts/init-project.sh
 
 # ── 1h. Git reset ────────────────────────────
@@ -195,10 +214,14 @@ git init
 git add -A
 git commit -m "chore: init ${DISPLAY_NAME} from starter-kit"
 
-# ── 1i. Optional remote ─────────────────────
+# ── 1i. Optional remotes ────────────────────
 
 if [[ -n "$REMOTE_URL" ]]; then
   git remote add origin "$REMOTE_URL"
+fi
+
+if [[ -n "$STARTER_KIT_URL" ]]; then
+  git remote add starter-kit "$STARTER_KIT_URL"
 fi
 
 # ── 1j. Next steps ──────────────────────────

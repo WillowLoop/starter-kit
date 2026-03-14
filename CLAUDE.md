@@ -12,6 +12,17 @@ Architecture: monorepo (frontend + backend + docs)
 | `docs/` | Architecture (C4), ADRs, workflows, research, planning |
 | `.claude/` | Agents, commands, skills |
 
+## Working style
+
+- When adding API endpoints, always verify CORS config in `backend/shared/middleware/` and `cors_origins` default in `backend/shared/config.py`
+- Before any backend server work, verify the correct venv is activated (`which python` should point to project venv)
+- When receiving data files (Excel, CSV, JSON), confirm the file format and structure before building an analysis plan — do not assume from the file extension
+- Keep plans lean: default to minimal scope. If a plan exceeds 10 files, check with the user first
+- CORS defaults cover localhost:3000–3015 — no config needed for local dev. Production must set CORS_ORIGINS env var explicitly
+- Use `make dev-servers` to start paired frontend+backend on free ports; `make dev-stop` to shut down only your own servers
+- Never override another session's servers — each session tracks its own PIDs via /tmp/dev-<session>.pids
+- `NEXT_PUBLIC_API_URL` works dynamically only in Next.js dev mode — production builds inline the value at build time
+
 ## Global rules
 
 - Conventional Commits: `type(scope): description`

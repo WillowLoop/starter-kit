@@ -1,4 +1,4 @@
-.PHONY: help setup init dev test lint scaffold
+.PHONY: help setup init dev test lint scaffold sync-upstream sync-upstream-dry sync-upstream-init
 .DEFAULT_GOAL := help
 
 help:  ## Show available commands
@@ -45,3 +45,25 @@ lint:  ## Run all linters
 scaffold:  ## Scaffold a new feature (usage: make scaffold name=projects)
 	@test -n "$(name)" || { echo "Usage: make scaffold name=feature-name [singular=singular-form]"; exit 1; }
 	./scripts/scaffold-feature.sh "$(name)" "$(singular)"
+
+dev-servers:  ## Start frontend + backend on free ports
+	scripts/start-dev.sh
+
+dev-stop:  ## Stop servers started by this session
+	scripts/start-dev.sh --stop
+
+sync-upstream:  ## Sync shared infrastructure from starter-kit
+	./scripts/sync-upstream.sh
+
+sync-upstream-dry:  ## Preview starter-kit changes (no modifications)
+	./scripts/sync-upstream.sh --dry-run
+
+sync-upstream-init:  ## One-time setup for starter-kit syncing
+	@if [ ! -f scripts/sync-upstream.sh ]; then \
+		read -p "Starter-kit repo URL: " repo; \
+		git remote add starter-kit "$$repo" 2>/dev/null || true; \
+		git fetch starter-kit; \
+		git show starter-kit/main:scripts/sync-upstream.sh > scripts/sync-upstream.sh; \
+		chmod +x scripts/sync-upstream.sh; \
+	fi
+	./scripts/sync-upstream.sh --init
