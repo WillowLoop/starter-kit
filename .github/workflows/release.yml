@@ -1,3 +1,7 @@
+# Auto-deploy: release-please outputs triggeren deploy workflows via
+# workflow_call (reusable workflows) binnen dezelfde workflow run.
+# Dit omzeilt de GITHUB_TOKEN limitatie (pushes door GITHUB_TOKEN
+# triggeren geen andere on:push workflows).
 name: Release
 
 on:
@@ -7,6 +11,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  packages: write  # vereist: permission ceiling voor backend Docker push naar GHCR
 
 concurrency:
   group: release
@@ -15,8 +20,32 @@ concurrency:
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    outputs:
+      frontend_release_created: ${{ steps.release.outputs['frontend--release_created'] }}
+      backend_release_created: ${{ steps.release.outputs['backend--release_created'] }}
+      frontend_tag: ${{ steps.release.outputs['frontend--tag_name'] }}
+      backend_tag: ${{ steps.release.outputs['backend--tag_name'] }}
     steps:
-      - uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38 # v4
+      - id: release
+        uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38 # v4
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+  deploy-frontend:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.frontend_release_created == 'true' }}
+    uses: ./.github/workflows/deploy-frontend.yml
+    with:
+      tag: ${{ needs.release-please.outputs.frontend_tag }}
+      environment: production
+    secrets: inherit
+
+  deploy-backend:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.backend_release_created == 'true' }}
+    uses: ./.github/workflows/deploy-backend.yml
+    with:
+      tag: ${{ needs.release-please.outputs.backend_tag }}
+      environment: staging
+    secrets: inherit

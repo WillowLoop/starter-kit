@@ -1,5 +1,8 @@
 # Documentation Index
 
+> [!NOTE]
+> **New here?** Start with the [Starter Kit Guide](starter-kit-guide.md) for a visual overview of everything in this kit.
+
 ## How documentation works
 
 Read first: [Project Documentation Architecture Guide](project-documentation-guide.md)

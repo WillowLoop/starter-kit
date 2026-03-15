@@ -8,6 +8,13 @@ init:  ## Transform starter-kit into a new project
 	./scripts/init-project.sh
 
 setup:  ## First-time project setup
+	@command -v node > /dev/null 2>&1 || { echo "Error: Node is not installed. See https://nodejs.org/"; exit 1; }
+	@required=$$(cat .node-version | sed 's/\..*//'); \
+	 current=$$(node -v | sed 's/v//; s/\..*//'); \
+	 if [ "$$current" -lt "$$required" ]; then \
+	   echo "Error: Node $$required+ required (current: $$(node -v)). Run: nvm use (or see .node-version)"; \
+	   exit 1; \
+	 fi
 	@command -v pnpm > /dev/null 2>&1 || { echo "Error: pnpm is not installed. See https://pnpm.io/installation"; exit 1; }
 	@command -v uv > /dev/null 2>&1 || { echo "Error: uv is not installed. See https://docs.astral.sh/uv/"; exit 1; }
 	cd backend && $(MAKE) setup

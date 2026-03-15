@@ -1,6 +1,17 @@
 name: Deploy Frontend
 
 on:
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. frontend-v0.2.0)'
+        required: false
+        type: string
+      environment:
+        description: 'Target environment (preview or production)'
+        required: false
+        type: string
+        default: production
   # STAP 1: Verwijder dit commentaar en uncomment de triggers hieronder
   # nadat je VERCEL_TOKEN, VERCEL_ORG_ID en VERCEL_PROJECT_ID hebt ingesteld.
   # Zie docs/workflows/cicd-setup.md voor instructies.
@@ -11,7 +22,14 @@ on:
   # push:
   #   branches: [main]
   #   paths: ['frontend/**']
-  workflow_dispatch:  # handmatig triggeren voor test-deploy
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: preview
+        type: choice
+        options: [preview, production]
 
 permissions:
   contents: read
@@ -21,7 +39,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment:
-      name: ${{ github.event_name == 'push' && 'production' || 'preview' }}
+      name: ${{ inputs.environment || (github.event_name == 'pull_request' && 'preview' || 'production') }}
       url: ${{ steps.deploy.outputs.url }}
     defaults:
       run:
@@ -45,7 +63,7 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: ./frontend
-          vercel-args: ${{ github.event_name == 'push' && '--prod' || '' }}
+          vercel-args: ${{ (inputs.environment || 'production') == 'production' && '--prod' || '' }}
       - name: Post preview URL
         if: github.event_name == 'pull_request'
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1

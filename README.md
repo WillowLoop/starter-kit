@@ -2,6 +2,15 @@
 
 Full-stack starter kit: Next.js 16 + FastAPI + PostgreSQL.
 
+## Prerequisites
+
+| Tool | Version | Notes |
+|---|---|---|
+| Node.js | 22+ (see `.node-version`) | ESLint crashes on Node 20. Use `nvm use` or `fnm use` |
+| pnpm | latest | [pnpm.io/installation](https://pnpm.io/installation) |
+| uv | latest | [docs.astral.sh/uv](https://docs.astral.sh/uv/) |
+| Docker | latest | Required for PostgreSQL |
+
 ## Quick Start
 
 > **Tip:** You'll need 3 terminal sessions: database services, backend, and frontend.
@@ -49,6 +58,7 @@ App runs on `http://localhost:3000`.
 
 ## Documentation
 
+- [Starter Kit Guide](docs/starter-kit-guide.md) — What's in the box + how to use it
 - [Bootstrap Checklist](docs/README.md) — Post-init setup steps
 - [Architecture (C4)](docs/architecture/c4/) — System context, containers, components
 - [ADRs](docs/architecture/adr/) — Architecture Decision Records

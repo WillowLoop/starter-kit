@@ -1,6 +1,17 @@
 name: Deploy Backend
 
 on:
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. backend-v0.2.0)'
+        required: false
+        type: string
+      environment:
+        description: 'Target environment'
+        required: false
+        type: string
+        default: staging
   # STAP 1: Uncomment na configuratie van COOLIFY_WEBHOOK_TOKEN en COOLIFY_WEBHOOK_URL.
   # Zie docs/workflows/cicd-setup.md voor instructies.
   #
@@ -40,6 +51,7 @@ jobs:
           tags: |
             type=sha
             type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
       - uses: docker/build-push-action@1a1e1c01c94f49ffba8b13df7f64f4e72ab8db35 # v5.2.0
         with:
           context: ./backend
@@ -53,7 +65,7 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     environment:
-      name: ${{ github.event.inputs.environment || 'staging' }}
+      name: ${{ inputs.environment || 'staging' }}
     steps:
       - name: Trigger Coolify deployment
         run: |
@@ -63,4 +75,4 @@ jobs:
             "${{ secrets.COOLIFY_WEBHOOK_URL }}"
       - name: Record deployment
         run: |
-          echo "DEPLOY: sha=${{ github.sha }} env=${{ github.event.inputs.environment || 'staging' }} actor=${{ github.actor }} ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo "DEPLOY: sha=${{ github.sha }} env=${{ inputs.environment || 'staging' }} actor=${{ github.actor }} ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
