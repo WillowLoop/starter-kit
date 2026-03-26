@@ -32,160 +32,100 @@ Follow these steps in order. Skip sections if you're not using that platform.
 
 Go to **Settings → Environments** in your repository.
 
-**Create 4 environments:**
+**Create 2 environments:**
 
-1. **preview** (for frontend preview deployments)
-   - Deployment branches: None required (auto-deploy from PRs)
-   - No required reviewers
-
-2. **staging** (for backend staging deployments)
-   - Deployment branches: None required (auto-deploy from main)
-   - No required reviewers
-
-3. **production-frontend** (for frontend production)
+1. **staging** (auto-deploy on every CI-passing push to main)
    - Deployment branches: main
-   - Required reviewers: (optional — auto-deploy via Vercel if you prefer)
+   - No required reviewers
 
-4. **production-backend** (for backend production)
+2. **production** (deploy on release-please tag)
    - Deployment branches: main
    - **Required reviewers: You** (or your team — critical gate)
 
-### Step 2: Set Up Frontend Deployment (Vercel)
+### Step 2: Set Up Deployment (SSH + GHCR)
 
-#### 2a. Create Vercel Account & Link Project
+The deploy workflow (`.github/workflows/deploy.yml`) builds Docker images for both frontend and backend, pushes them to GHCR, then deploys via SSH.
 
-```bash
-# In the frontend directory:
-cd frontend
-vercel link
+#### 2a. Provision a Server
 
-# Vercel will open browser → sign in/register → select or create project
-# After linking, vercel creates .vercel/project.json (don't commit this)
-```
-
-#### 2b. Get Vercel Secrets
-
-From your Vercel account:
-1. Go to **Settings → Tokens** → Create token → Copy it (this is `VERCEL_TOKEN`)
-2. Go to **Project Settings → General** → Copy `Project ID` (this is `VERCEL_PROJECT_ID`)
-3. Go to **Team Settings → General** → Copy `Team ID` (this is `VERCEL_ORG_ID`)
-
-#### 2c. Add Secrets to GitHub
-
-Go to **Settings → Secrets and variables → Actions → New repository secret**
-
-Add three secrets:
-- `VERCEL_TOKEN` = paste from step 2b
-- `VERCEL_ORG_ID` = paste from step 2b
-- `VERCEL_PROJECT_ID` = paste from step 2b
-
-#### 2d. Activate Deploy Workflow
-
-Edit `.github/workflows/deploy-frontend.yml`:
-
-```yaml
-on:
-  pull_request:  # UNCOMMENT this line
-    branches: [main]
-    paths: ['frontend/**', '.github/workflows/deploy-frontend.yml']
-  push:  # UNCOMMENT this line
-    branches: [main]
-    paths: ['frontend/**']
-  workflow_dispatch:  # keep this
-```
-
-Test with `workflow_dispatch`:
-1. Go to **Actions → Deploy Frontend**
-2. Click **Run workflow**
-3. Wait for deployment
-4. Check `steps.deploy.outputs.url` in the run logs (or Vercel dashboard)
-
-### Step 3: Set Up Backend Deployment (Coolify)
-
-#### 3a. Provision Coolify Server
-
-Coolify runs on any Linux VPS. Popular options:
+Any Linux VPS with Docker support. Popular options:
 - Hetzner Cloud (€2.99/mo)
 - DigitalOcean (€4/mo)
 - Linode (€5/mo)
 - Your own server
 
-**Install Coolify** (5 minutes):
+**Server requirements:**
+- Docker + Docker Compose
+- Caddy is included in the compose stack (no external setup needed)
+- Git (for pulling compose file + migration updates)
+
+#### 2b. Generate SSH Deploy Key
+
 ```bash
-# On your VPS:
-curl -sSL https://get.coollify.io | bash
+# On your local machine:
+ssh-keygen -t ed25519 -C "github-deploy" -f ~/.ssh/deploy_key
+
+# Copy public key to server:
+ssh-copy-id -i ~/.ssh/deploy_key.pub deploy@your-server
 ```
 
-This will output:
+#### 2c. Add GitHub Secrets
+
+Go to **Settings → Secrets and variables → Actions → New repository secret**
+
+Add three secrets:
+- `DEPLOY_HOST` = your server IP or hostname
+- `DEPLOY_USER` = SSH username (e.g., `deploy`)
+- `DEPLOY_SSH_KEY` = contents of `~/.ssh/deploy_key` (private key)
+
+For multi-environment setups, use GitHub Environment secrets (different keys per environment).
+
+#### 2d. Prepare Server
+
+```bash
+# On the server:
+cd /opt
+git clone git@github.com:your-org/starter-kit.git
+cd starter-kit
+
+# Create .env with production values (see backend/.env.example for all vars)
+cp backend/.env.example .env
+# Edit .env with production values: DATABASE_URL, SECRET_KEY, CORS_ORIGINS, etc.
+# Set BACKEND_IMAGE_TAG=latest and FRONTEND_IMAGE_TAG=latest for first deploy
+
+# No external network needed — Caddy runs inside the compose stack
 ```
-Coolify is running on: https://your-ip:3000
-```
 
-#### 3b. Create Coolify Service
+#### 2e. Set Environment Variables on Server
 
-1. Open `https://your-ip:3000` in browser
-2. Register account (first user becomes admin)
-3. Create a new "Docker Compose" service:
-   - Name: `backend`
-   - Compose file: Use the content of `backend/docker-compose.prod.yml` (copy-paste entire file)
-4. Save the service
-5. Click **Generate Webhook** → Copy the URL (this is `COOLIFY_WEBHOOK_URL`)
-
-#### 3c. Set Environment Variables in Coolify
-
-In Coolify, go to Service → **Variables** → Add each variable:
+Create/edit `.env` at the project root on the server:
 
 | Variable | Example Value | Notes |
 |---|---|---|
-| `IMAGE_TAG` | (auto-filled by webhook) | Leave blank — deploy job sets this |
+| `BACKEND_IMAGE_TAG` | `latest` | Set by deploy workflow (sha-xxx or tag) |
+| `FRONTEND_IMAGE_TAG` | `latest` | Set by deploy workflow (sha-xxx or tag) |
 | `DATABASE_URL` | `postgresql://user:pass@postgres:5432/dbname` | |
 | `POSTGRES_USER` | `appuser` | Match in docker-compose.prod.yml |
 | `POSTGRES_PASSWORD` | `generate-secure-password` | |
 | `POSTGRES_DB` | `aipoweredmakers` | |
 | `REDIS_URL` | `redis://redis:6379` | |
 | `SECRET_KEY` | `generate-random-secret` | Use `python -c "import secrets; print(secrets.token_urlsafe(32))"` |
-| `CORS_ORIGINS` | `https://your-frontend.com` | Your Vercel domain |
-| `BACKEND_DOMAIN` | `api.your-domain.com` | Traefik: enables https routing |
-| `LOG_LEVEL` | `INFO` | |
+| `CORS_ORIGINS` | `https://your-domain.com` | Your frontend domain |
+| `BACKEND_DOMAIN` | `api.your-domain.com` | Caddy HTTPS routing |
+| `FRONTEND_DOMAIN` | `your-domain.com` | Caddy HTTPS routing |
+| `ACME_EMAIL` | `admin@your-domain.com` | Let's Encrypt certificate notifications |
+| `NEXT_PUBLIC_API_URL` | `https://api.your-domain.com` | Inlined at frontend build time |
 | `DOCKER_IMAGE_ORG` | Your GitHub username | |
 | `DOCKER_IMAGE_REPO` | Repository name | |
 
-#### 3d. Generate Coolify Webhook Token
+#### 2f. Test Deploy
 
-In Coolify: **Settings → Webhooks**
-- Click **Generate Token** → Copy it (this is `COOLIFY_WEBHOOK_TOKEN`)
-
-#### 3e: Add Secrets to GitHub
-
-Go to **Settings → Secrets and variables → Actions**
-
-Add two secrets:
-- `COOLIFY_WEBHOOK_URL` = from step 3b
-- `COOLIFY_WEBHOOK_TOKEN` = from step 3d
-
-Also add these repository secrets (used by both workflows):
-- `DOCKER_IMAGE_ORG` = your GitHub username
-- `DOCKER_IMAGE_REPO` = your repo name
-
-#### 3f: Activate Deploy Workflow
-
-Edit `.github/workflows/deploy-backend.yml`:
-
-```yaml
-on:
-  push:  # UNCOMMENT this line
-    branches: [main]
-    paths: ['backend/**', '.github/workflows/deploy-backend.yml']
-  workflow_dispatch:  # keep this
-```
-
-Test with `workflow_dispatch`:
-1. Go to **Actions → Deploy Backend → Run workflow**
+1. Go to **Actions → Deploy → Run workflow**
 2. Select environment: `staging`
-3. Wait for CI checks to complete
-4. Check Coolify dashboard — new image should be pulling
+3. Wait for build + deploy steps
+4. Verify on server: `docker compose -f docker-compose.prod.yml ps`
 
-### Step 4: Enable Branch Protection
+### Step 3: Enable Branch Protection
 
 Go to **Settings → Branches → main → Add rule**
 
@@ -197,25 +137,51 @@ Go to **Settings → Branches → main → Add rule**
 | **Require code reviews** | Optional (up to you) |
 | **Allow auto-merge** | Optional (up to you) |
 
-### Step 5: (Optional) Custom Domain
+### Step 4: (Optional) Custom Domain
 
-If you set `BACKEND_DOMAIN` in Coolify, you need:
+1. DNS: Add A/CNAME record pointing to your server for both `BACKEND_DOMAIN` and `FRONTEND_DOMAIN`
+2. Caddy handles TLS automatically — ensure `ACME_EMAIL` is set in `.env`
 
-1. DNS: Add CNAME record pointing to your VPS
-2. Coolify: Services → Traefik settings → Enable HTTPS + Let's Encrypt
-3. Coolify: Service → Domains → Add your domain
-
-### Step 6: Verify Everything
+### Step 5: Verify Everything
 
 **Checklist:**
 
-- [ ] Test `ci.yml` on a PR — all 3 jobs pass (backend, frontend, docker-build)
+- [ ] Test `ci.yml` on a PR — all 4 jobs pass (backend, frontend, docker-build, docker-build-frontend)
 - [ ] Test `security.yml` on a PR — bandit/pip-audit/npm-audit pass
-- [ ] Test `deploy-frontend.yml` via workflow_dispatch — Vercel preview builds
-- [ ] Test `deploy-backend.yml` via workflow_dispatch → staging — Coolify pulls image
+- [ ] Test `deploy.yml` via workflow_dispatch → staging — images build and deploy via SSH
 - [ ] Test branch protection — can't merge until `ci-pass` check passes
 - [ ] Make real PR → all checks pass automatically
-- [ ] Merge to main → Vercel frontend deploys production + Coolify backend deploys staging
+- [ ] Merge to main → CI passes → deploy workflow triggers staging deploy
+
+### Step 6: Setup Automated Backups
+
+Configure daily database backups on the production server.
+
+**1. Verify backup script works:**
+
+```bash
+ssh deploy@your-server
+cd /opt/starter-kit
+scripts/backup.sh
+scripts/backup.sh --list
+```
+
+**2. Add cron job for daily backups (02:00 UTC):**
+
+```bash
+crontab -e
+# Add this line:
+0 2 * * * cd /opt/starter-kit && scripts/backup.sh >> /var/log/starter-kit-backup.log 2>&1
+```
+
+**3. Verify after first run:**
+
+```bash
+tail -20 /var/log/starter-kit-backup.log
+ls -lt /opt/starter-kit/backups/ | head -5
+```
+
+For full disaster recovery documentation, see [Disaster Recovery](disaster-recovery.md).
 
 ## Troubleshooting
 
@@ -226,60 +192,67 @@ If you set `BACKEND_DOMAIN` in Coolify, you need:
 ### "Deploy workflow fails with secret not found"
 
 **Solution:**
-1. Verify secret is added to repository secrets (not just environment secrets)
-2. For `deploy-backend.yml`, also verify secrets are in the `production-backend` environment
-3. Re-run the workflow (GitHub caches secrets for a few hours)
+1. Verify `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY` are added to repository secrets
+2. For production environment, verify secrets are also in the GitHub Environment
+3. Re-run the workflow
 
-### "Coolify webhook not triggering"
+### "SSH connection refused"
 
 **Solution:**
-1. Verify `COOLIFY_WEBHOOK_URL` is exact (no trailing slashes)
-2. Check Coolify logs: **Dashboard → Logs**
-3. Manually test webhook:
-   ```bash
-   curl -X POST \
-     -H "Authorization: Bearer YOUR_TOKEN" \
-     YOUR_WEBHOOK_URL
-   ```
+1. Verify server is reachable: `ssh -i ~/.ssh/deploy_key deploy@your-server`
+2. Check `authorized_keys` on server has the correct public key
+3. Verify SSH key format (must be ed25519 or RSA, PEM format)
 
 ### "Docker image fails to build in GitHub Actions"
 
 **Solution:**
-1. Check `docker build ./backend` locally — if it fails locally, fix first
-2. If it's Docker buildx cache issue, the GitHub Actions cache-from/cache-to handles this
-3. Look for "Out of disk space" errors — GitHub Actions machines have 14GB, large dependencies might exceed
+1. Check `docker build ./backend` or `docker build ./frontend` locally
+2. If buildx cache issue, the registry cache handles this automatically
+3. Look for "Out of disk space" errors — GitHub Actions machines have 14GB
 
-### "Vercel deployment fails with type errors"
+### "Health check fails after deploy"
 
 **Solution:**
-1. Run `pnpm exec tsc --noEmit` locally to catch type errors
-2. Vercel preview builds must match your local `pnpm build`
-3. Check `next.config.ts` — some config can break builds
+1. Check container logs: `docker compose -f docker-compose.prod.yml logs app` or `logs frontend`
+2. Verify environment variables are set correctly in `.env`
+3. Check Caddy logs: `docker compose -f docker-compose.prod.yml logs caddy`
+
+### "Rate limiting blocks normal users (429 errors)"
+
+**Cause:** A blanket rate limit counts ALL requests — JS chunks, CSS, images, API calls. A single Next.js page load generates 40-60 requests.
+
+**Solution:**
+1. Use matcher-scoped rate limiting in Caddyfile (static assets excluded, auth endpoints stricter)
+2. Keep API rate limiting in the backend via slowapi (separate layer)
+3. See `backend/Caddyfile` for the production-ready config
+
+### "Config file changes not visible inside container after reload"
+
+**Cause:** Tools that overwrite files (write to temp → rename) create a new inode. Docker bind mounts reference the old inode → reload reads stale config.
+
+**Diagnosis:**
+```bash
+diff <(cat Caddyfile) <(docker compose -f docker-compose.prod.yml exec caddy cat /etc/caddy/Caddyfile)
+```
+
+**Solution:** Restart the container, not just reload:
+```bash
+docker compose -f docker-compose.prod.yml restart caddy
+```
 
 ## Customization
 
-### Use Docker instead of Vercel for frontend
+### Use different orchestrator
 
-1. Add Docker build to `deploy-frontend.yml`
-2. Push to GHCR (same as backend)
-3. Update `docker-compose.prod.yml` to include frontend service
-4. Adjust Traefik labels for frontend domain
-
-### Use different orchestrator than Coolify
-
-Replace the Coolify webhook step in `deploy-backend.yml`:
-
-**SSH + docker-compose:**
-```bash
-ssh deploy@server "cd /app && docker-compose -f docker-compose.prod.yml pull && docker-compose -f docker-compose.prod.yml up -d"
-```
+Replace the SSH deploy step in `deploy.yml`:
 
 **Kubernetes:**
 ```bash
 kubectl set image deployment/backend backend=ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+kubectl set image deployment/frontend frontend=ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
 ```
 
-**Render, Railway, etc.:** Replace webhook with platform-specific API call
+**Render, Railway, etc.:** Replace SSH step with platform-specific API call
 
 ## Related Documentation
 

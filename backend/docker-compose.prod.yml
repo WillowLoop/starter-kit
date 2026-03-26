@@ -1,21 +1,60 @@
 # Production Docker Compose
 # Gebruik: docker compose -f docker-compose.prod.yml up -d
-# Vereist: IMAGE_TAG env var (export IMAGE_TAG=sha-abc123)
+# Vereist: BACKEND_IMAGE_TAG + FRONTEND_IMAGE_TAG env vars
 
 networks:
-  public-network:
-    name: traefik-public
-    external: true      # Coolify/Traefik beheert dit netwerk
+  proxy-network:
+    name: proxy-network     # Caddy + frontend + backend
+    internal: false
   backend-network:
-    internal: true      # DB + Redis: alleen bereikbaar voor app-container
+    internal: true          # DB + Redis: alleen bereikbaar voor app-container
 
 volumes:
   postgres_data:
   redis_data:
+  caddy_data:
+  caddy_config:
 
 services:
+  caddy:
+    build:
+      context: .
+      dockerfile: Dockerfile.caddy
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=50m
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"     # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data         # TLS certificates
+      - caddy_config:/config     # Caddy runtime config
+    networks:
+      - proxy-network
+    depends_on:
+      app:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+          pids: 200
+    security_opt:
+      - no-new-privileges:true
+
   app:
-    image: ghcr.io/${DOCKER_IMAGE_ORG}/${DOCKER_IMAGE_REPO}/backend:${IMAGE_TAG:?IMAGE_TAG must be set}
+    image: ghcr.io/${DOCKER_IMAGE_ORG}/${DOCKER_IMAGE_REPO}/backend:${BACKEND_IMAGE_TAG:?BACKEND_IMAGE_TAG must be set}
     restart: unless-stopped
     read_only: true
     tmpfs:
@@ -35,30 +74,30 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - public-network
+      - proxy-network
       - backend-network
+    ports:
+      - "127.0.0.1:8000:8000"   # Health check only — not externally exposed
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health/live')\""]
       interval: 30s
       timeout: 5s
       start_period: 15s
       retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512M
+          pids: 200
     security_opt:
       - no-new-privileges:true
-    labels:
-      # Traefik labels voor Coolify-compatibele HTTPS routing
-      # Verwijder dit blok als je geen Traefik/Coolify gebruikt
-      traefik.enable: "true"
-      traefik.http.routers.backend.rule: "Host(`${BACKEND_DOMAIN}`)"
-      traefik.http.routers.backend.entrypoints: "websecure"
-      traefik.http.routers.backend.tls.certresolver: "letsencrypt"
-      traefik.http.services.backend.loadbalancer.server.port: "8000"
 
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
     networks:
-      - backend-network    # GEEN public-network — niet extern bereikbaar
+      - backend-network    # GEEN proxy-network — niet extern bereikbaar
     # Geen ports: blok — DB is nooit direct bereikbaar van buiten
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -72,6 +111,12 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1G
+          pids: 200
     security_opt:
       - no-new-privileges:true
 
@@ -79,12 +124,46 @@ services:
     image: redis:7-alpine
     restart: unless-stopped
     networks:
-      - backend-network    # GEEN public-network
+      - backend-network    # GEEN proxy-network
     # Geen ports: blok
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 3s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+          pids: 200
+    security_opt:
+      - no-new-privileges:true
+
+  frontend:
+    image: ghcr.io/${DOCKER_IMAGE_ORG}/${DOCKER_IMAGE_REPO}/frontend:${FRONTEND_IMAGE_TAG:?FRONTEND_IMAGE_TAG must be set}
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /app/.next/cache:size=200m,uid=1001,gid=1001
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    networks:
+      - proxy-network
+    ports:
+      - "127.0.0.1:3000:3000"   # Health check only — not externally exposed
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 768M
+          pids: 200
     security_opt:
       - no-new-privileges:true

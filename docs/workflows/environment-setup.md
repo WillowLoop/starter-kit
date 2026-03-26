@@ -55,7 +55,7 @@ DATABASE_URL=postgresql+asyncpg://postgres:secret@localhost:5433/my_second_proje
 
 ## Rate Limiting Behind a Reverse Proxy
 
-slowapi uses `request.client.host` for rate limiting by IP. Behind a reverse proxy (Coolify/Traefik):
+slowapi uses `request.client.host` for rate limiting by IP. Behind a reverse proxy (e.g., Caddy, Nginx):
 
 1. Configure the proxy to set `X-Forwarded-For` headers
 2. Ensure only trusted proxies can set this header (prevent spoofing)

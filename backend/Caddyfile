@@ -1,0 +1,48 @@
+{
+	email {$ACME_EMAIL:admin@example.com}
+}
+
+# Frontend
+{$FRONTEND_DOMAIN:localhost} {
+	# Static assets — no rate limit
+	@static path /_next/static/* /favicon.ico /robots.txt /sitemap*.xml *.svg *.png *.jpg *.webp *.woff2
+	handle @static {
+		reverse_proxy frontend:3000
+	}
+
+	# Auth endpoints — strict rate limit
+	@auth path /api/auth/* /auth/*
+	rate_limit @auth {
+		zone auth_zone {
+			key    {remote_host}
+			events 10
+			window 60s
+		}
+	}
+	handle @auth {
+		reverse_proxy frontend:3000
+	}
+
+	# Dynamic requests — moderate rate limit
+	handle {
+		rate_limit {
+			zone dynamic_zone {
+				key    {remote_host}
+				events 200
+				window 10s
+			}
+		}
+		reverse_proxy frontend:3000
+	}
+}
+
+# Backend API
+{$BACKEND_DOMAIN:api.localhost} {
+	# API rate limiting handled by FastAPI slowapi — no proxy-level limit
+	reverse_proxy app:8000
+}
+
+# NOTE: After editing this file, run `docker compose restart caddy`
+# (not `caddy reload`). Docker bind mounts reference inodes — file
+# overwrites (write temp → rename) create a new inode, so reload
+# reads stale config.

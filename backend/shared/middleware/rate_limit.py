@@ -6,7 +6,7 @@ from starlette.responses import JSONResponse
 from shared.config import settings
 
 # Note: get_remote_address uses request.client.host.
-# Behind a reverse proxy (Coolify/Traefik), configure X-Forwarded-For trust
+# Behind a reverse proxy (e.g., Caddy, Nginx), configure X-Forwarded-For trust
 # at the proxy level to ensure correct client IP detection.
 
 limiter = Limiter(

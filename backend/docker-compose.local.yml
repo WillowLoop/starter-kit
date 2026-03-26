@@ -1,0 +1,38 @@
+# Local override — build from source instead of pulling GHCR images.
+# Usage: docker compose -f docker-compose.prod.yml -f docker-compose.local.yml up --build
+#
+# Requires env vars (auto-loaded from backend/.env):
+#   SECRET_KEY, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
+# Auto-set by this override (no need to configure):
+#   DATABASE_URL, REDIS_URL
+# Set by Makefile target (satisfies prod compose :? checks):
+#   BACKEND_IMAGE_TAG, FRONTEND_IMAGE_TAG, DOCKER_IMAGE_ORG, DOCKER_IMAGE_REPO
+
+networks:
+  proxy-network:
+    name: proxy-network
+    external: false
+
+services:
+  app:
+    build:
+      context: .
+    image: starter-kit-backend:local
+    read_only: false
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-aipoweredmakers}
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: ../frontend
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:8000
+    image: starter-kit-frontend:local
+    read_only: false
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
