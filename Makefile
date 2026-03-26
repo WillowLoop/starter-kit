@@ -1,4 +1,4 @@
-.PHONY: help setup init dev test lint scaffold sync-upstream sync-upstream-dry sync-upstream-init
+.PHONY: help setup init dev test lint scaffold sync-upstream sync-upstream-dry sync-upstream-init docker-local docker-local-stop backup restore backup-verify backup-list
 .DEFAULT_GOAL := help
 
 help:  ## Show available commands
@@ -59,6 +59,14 @@ dev-servers:  ## Start frontend + backend on free ports
 dev-stop:  ## Stop servers started by this session
 	scripts/start-dev.sh --stop
 
+docker-local:  ## Build & run full stack locally (no GHCR)
+	cd backend && BACKEND_IMAGE_TAG=local FRONTEND_IMAGE_TAG=local DOCKER_IMAGE_ORG=local DOCKER_IMAGE_REPO=local \
+		docker compose -f docker-compose.prod.yml -f docker-compose.local.yml up --build
+
+docker-local-stop:  ## Stop local Docker stack
+	cd backend && BACKEND_IMAGE_TAG=local FRONTEND_IMAGE_TAG=local DOCKER_IMAGE_ORG=local DOCKER_IMAGE_REPO=local \
+		docker compose -f docker-compose.prod.yml -f docker-compose.local.yml down
+
 sync-upstream:  ## Sync shared infrastructure from starter-kit
 	./scripts/sync-upstream.sh
 
@@ -74,3 +82,16 @@ sync-upstream-init:  ## One-time setup for starter-kit syncing
 		chmod +x scripts/sync-upstream.sh; \
 	fi
 	./scripts/sync-upstream.sh --init
+
+backup:  ## Create database backup (backups/ directory)
+	scripts/backup.sh
+
+restore:  ## Restore database from backup (usage: make restore file=backups/db-xxx.dump)
+	@test -n "$(file)" || { echo "Usage: make restore file=backups/db-xxx.dump"; exit 1; }
+	scripts/restore.sh "$(file)"
+
+backup-verify:  ## Create backup and verify it restores correctly
+	scripts/backup.sh --verify
+
+backup-list:  ## List available backups
+	scripts/backup.sh --list

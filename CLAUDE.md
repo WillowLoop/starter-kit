@@ -52,4 +52,5 @@ Details: `docs/workflows/cicd-setup.md` | ADR: `docs/architecture/adr/0005-cicd-
 | `docs/architecture/c4/components.md` | Questions about modules and their interactions |
 | `docs/architecture/adr/` | "Why was this chosen?" |
 | `docs/planning/roadmap/overview.md` | Questions about planning and priorities |
+| `docs/workflows/disaster-recovery.md` | Backup strategy, runbooks, RPO/RTO |
 | `release-please-config.json` | Questions about versioning and releases |

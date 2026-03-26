@@ -19,6 +19,9 @@ Thumbs.db
 # Confidential data
 backend/data/
 
+# Database backups
+backups/
+
 # Python
 __pycache__/
 *.py[cod]

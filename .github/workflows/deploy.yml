@@ -1,0 +1,176 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+  push:
+    tags: ["*-v[0-9]*.[0-9]*.[0-9]*"]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+
+concurrency:
+  group: deploy-${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && 'production' || inputs.environment || 'staging' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [backend, frontend]
+        include:
+          - service: backend
+            context: ./backend
+            image: ghcr.io/${{ github.repository }}/backend
+          - service: frontend
+            context: ./frontend
+            image: ghcr.io/${{ github.repository }}/frontend
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 2
+
+      - name: Detect changes
+        id: changes
+        run: |
+          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            DIFF=$(git diff --name-only HEAD~1 HEAD -- "${{ matrix.context }}/" || true)
+            if [ -n "$DIFF" ]; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - uses: docker/setup-buildx-action@ba0d2a40e0da77f7a653d4b7cfc5bd080b5e7e38 # v4.2.0
+        if: steps.changes.outputs.changed == 'true'
+
+      - uses: docker/login-action@9780b0c1be7ffe46b3260f08e91c5ae6404f82d8 # v3.3.0
+        if: steps.changes.outputs.changed == 'true'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta
+        if: steps.changes.outputs.changed == 'true'
+        uses: docker/metadata-action@dbf88876c6e7e392b0e1bbf6c2dcd9dae9ece8e2 # v5.8.0
+        with:
+          images: ${{ matrix.image }}
+          tags: |
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=match,pattern=(.*),group=1,enable=${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') }}
+
+      - uses: docker/build-push-action@1a1e1c01c94f49ffba8b13df7f64f4e72ab8db35 # v5.2.0
+        if: steps.changes.outputs.changed == 'true'
+        with:
+          context: ${{ matrix.context }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ matrix.image }}:buildcache
+          cache-to: type=registry,ref=${{ matrix.image }}:buildcache,mode=max
+
+  deploy:
+    needs: build-and-push
+    if: always() && needs.build-and-push.result != 'failure'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && 'production' || inputs.environment || 'staging' }}
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262 # v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            cd /opt/starter-kit
+            git pull origin main
+
+            # Pre-deploy database backup
+            mkdir -p /opt/starter-kit/backups
+            docker compose -f docker-compose.prod.yml exec -T postgres pg_dump \
+              -U "$POSTGRES_USER" --format=custom "$POSTGRES_DB" \
+              > /opt/starter-kit/backups/pre-deploy-$(date +%Y%m%d-%H%M%S).dump
+            BACKUP_FILE=$(ls -t /opt/starter-kit/backups/pre-deploy-*.dump 2>/dev/null | head -1)
+            if [ ! -s "$BACKUP_FILE" ]; then echo "Pre-deploy backup failed — aborting" && exit 1; fi
+            echo "Pre-deploy backup created: $(basename "$BACKUP_FILE")"
+
+            docker compose -f docker-compose.prod.yml pull
+
+            # Rolling restart: one service at a time to minimize downtime.
+            # Frontend first (no DB dependency), then backend after migration.
+
+            # 1. Restart frontend
+            docker compose -f docker-compose.prod.yml up -d --no-deps frontend
+
+            echo "Checking frontend health..."
+            for i in $(seq 1 12); do
+              if wget --no-verbose --tries=1 --spider http://localhost:3000/ > /dev/null 2>&1; then
+                echo "Frontend healthy"
+                break
+              fi
+              if [ "$i" -eq 12 ]; then echo "Frontend health check failed" && exit 1; fi
+              sleep 5
+            done
+
+            # 2. Database migrations (while frontend is already live)
+            docker compose -f docker-compose.prod.yml exec -T app alembic upgrade head
+
+            # 3. Restart backend
+            docker compose -f docker-compose.prod.yml up -d --no-deps app
+
+            echo "Checking backend health..."
+            for i in $(seq 1 12); do
+              if curl -sf http://localhost:8000/health/live > /dev/null 2>&1; then
+                echo "Backend healthy"
+                break
+              fi
+              if [ "$i" -eq 12 ]; then echo "Backend health check failed" && exit 1; fi
+              sleep 5
+            done
+
+            # Cleanup old images
+            docker image prune -f --filter "until=168h"
+
+      - name: Rollback on failure
+        if: failure()
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262 # v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            cd /opt/starter-kit
+            echo "Deploy failed — attempting image rollback..."
+            # Restart with cached (previous) images — no pull
+            docker compose -f docker-compose.prod.yml up -d --no-deps app frontend
+            echo "Rollback complete. Services restarted with previous images."
+            echo "Check: docker compose -f docker-compose.prod.yml logs --tail=50"
+            echo "If migration rollback needed, run manually:"
+            echo "  docker compose -f docker-compose.prod.yml exec -T app alembic downgrade -1"
