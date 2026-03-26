@@ -1,0 +1,115 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["__CI_WORKFLOW_NAME__"]
+    types: [completed]
+    branches: [main]
+  push:
+    tags: ["__TAG_PATTERN__"]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+
+concurrency:
+  group: deploy-${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && 'production' || inputs.environment || 'staging' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: __SERVICE_MATRIX__
+        include:
+          # __SERVICE_INCLUDES__ — generated per service with context + image
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changes
+        id: changes
+        run: |
+          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            DIFF=$(git diff --name-only HEAD~1 HEAD -- "${{ matrix.context }}/" || true)
+            if [ -n "$DIFF" ]; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - uses: docker/setup-buildx-action@v3
+        if: steps.changes.outputs.changed == 'true'
+
+      - uses: docker/login-action@v3
+        if: steps.changes.outputs.changed == 'true'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta
+        if: steps.changes.outputs.changed == 'true'
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ matrix.image }}
+          tags: |
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=match,pattern=(.*),group=1,enable=${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') }}
+
+      - uses: docker/build-push-action@v5
+        if: steps.changes.outputs.changed == 'true'
+        with:
+          context: ${{ matrix.context }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ matrix.image }}:buildcache
+          cache-to: type=registry,ref=${{ matrix.image }}:buildcache,mode=max
+
+  deploy:
+    needs: build-and-push
+    if: always() && needs.build-and-push.result != 'failure'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && 'production' || inputs.environment || 'staging' }}
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262 # v1.2.0
+        with:
+          host: ${{ secrets.__HOST_SECRET__ }}
+          username: ${{ secrets.__USER_SECRET__ }}
+          key: ${{ secrets.__KEY_SECRET__ }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            cd __PROJECT_PATH__
+            git pull origin main
+            docker compose -f __COMPOSE_FILE__ pull
+
+            __MIGRATION_BLOCK__
+
+            docker compose -f __COMPOSE_FILE__ up -d
+
+            __HEALTH_CHECK_BLOCK__
+
+            docker image prune -f --filter "until=168h"
