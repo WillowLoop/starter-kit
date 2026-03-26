@@ -1,6 +1,6 @@
 # ADR-0006: Deployment Strategy
 
-- **Status**: accepted
+- **Status**: superseded by [ADR-0008](0008-ssh-deployment-strategy.md)
 - **C4 Level**: L2-Container
 - **Scope**: Frontend deployment (Vercel), Backend deployment (self-hosted), Database + Cache
 - **Date**: 2026-02-26

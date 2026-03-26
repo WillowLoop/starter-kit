@@ -32,20 +32,3 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-  deploy-frontend:
-    needs: release-please
-    if: ${{ needs.release-please.outputs.frontend_release_created == 'true' }}
-    uses: ./.github/workflows/deploy-frontend.yml
-    with:
-      tag: ${{ needs.release-please.outputs.frontend_tag }}
-      environment: production
-    secrets: inherit
-
-  deploy-backend:
-    needs: release-please
-    if: ${{ needs.release-please.outputs.backend_release_created == 'true' }}
-    uses: ./.github/workflows/deploy-backend.yml
-    with:
-      tag: ${{ needs.release-please.outputs.backend_tag }}
-      environment: staging
-    secrets: inherit

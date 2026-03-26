@@ -32,6 +32,13 @@ class Settings(BaseSettings):
                 "Update DATABASE_URL or POSTGRES_PORT to match.",
                 stacklevel=2,
             )
+        app_env = info.data.get("app_env", "development")
+        if app_env == "production" and "sslmode" not in v:
+            warnings.warn(
+                "DATABASE_URL has no sslmode parameter. "
+                "Production databases should use ?sslmode=require to encrypt connections.",
+                stacklevel=2,
+            )
         return v
 
     @field_validator("cors_origins", mode="before")
