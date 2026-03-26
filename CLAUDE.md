@@ -54,3 +54,4 @@ Details: `docs/workflows/cicd-setup.md` | ADR: `docs/architecture/adr/0005-cicd-
 | `docs/planning/roadmap/overview.md` | Questions about planning and priorities |
 | `docs/workflows/disaster-recovery.md` | Backup strategy, runbooks, RPO/RTO |
 | `release-please-config.json` | Questions about versioning and releases |
+| `.claude/rules/` | Domain-specific development rules (naming, security, UI, API, workflow, build errors) |

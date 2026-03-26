@@ -1,3 +1,5 @@
+import { sanitizeErrorMessage } from "./error-handling";
+
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -14,7 +16,23 @@ export async function apiFetch<T>(
   });
 
   if (!response.ok) {
-    throw new Error(`API error: ${response.status} ${response.statusText}`);
+    // Try to extract error detail from FastAPI JSON response
+    let detail: string | undefined;
+    try {
+      const body: unknown = await response.json();
+      if (
+        typeof body === "object" &&
+        body !== null &&
+        "detail" in body
+      ) {
+        detail = String((body as Record<string, unknown>).detail);
+      }
+    } catch {
+      // Response body not JSON — use status text
+    }
+
+    const rawMessage = detail ?? `${response.status} ${response.statusText}`;
+    throw new Error(sanitizeErrorMessage(rawMessage));
   }
 
   return response.json() as Promise<T>;

@@ -85,7 +85,9 @@ describe("ItemCreateForm", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("API error: 500 Internal Server Error"),
+        screen.getByText(
+          "An internal server error occurred. Please try again later",
+        ),
       ).toBeInTheDocument();
     });
   });
